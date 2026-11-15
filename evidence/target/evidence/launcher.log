@@ -1,0 +1,836 @@
+nohup: ignoring input
+2026-11-02T15:27:32+05:30
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+Linux inhydmupc0899-l 5.15.0-43-generic #46-Ubuntu SMP Tue Jul 12 10:30:17 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+PRETTY_NAME="Ubuntu 22.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.1 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+
+===== Missions 1-6 =====
+SECURELAB Person 1 evidence run
+Timestamp (UTC): 2026-11-02T09:57:32Z
+Host: inhydmupc0899-l
+User: MU
+Repository path: /home/MU/Downloads/sos/securelab-20261102-152707
+This run records this machine's output; no values are pre-filled.
+
+$ id
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+
+$ groups
+MU
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/identity
+Real UID         : 1002
+Effective UID    : 1002
+Real GID         : 1002
+Effective GID    : 1002
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/syscall_demo
+
+$ cat hello.txt
+Hello from user space!
+
+$ strace -o /home/MU/Downloads/sos/securelab-20261102-152707/member1/evidence/m02_trace.txt /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/syscall_demo
+
+Relevant calls from the captured trace:
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+close(3)                                = 0
+openat(AT_FDCWD, "hello.txt", O_WRONLY|O_CREAT|O_TRUNC, 0644) = 3
+write(3, "Hello from user space!\n", 23) = 23
+close(3)                                = 0
+$ sleep 120 &
+PID=2984993
+$ ps -p 2984993 -o pid,ppid,uid,cmd
+    PID    PPID   UID CMD
+2984993 2984943  1002 sleep 120
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/src/proc_inspector.sh 2984993
+PID: 2984993
+Command: sleep 120 
+Name:	sleep
+State:	S (sleeping)
+PPid:	2984943
+Uid:	1002	1002	1002	1002
+Gid:	1002	1002	1002	1002
+VmSize:	   17024 kB
+VmRSS:	    1008 kB
+Threads:	1
+CapEff:	0000000000000000
+Open file descriptors: 3
+Start time (clock ticks since boot): 43652030
+
+$ ls -l /proc/2984993/fd
+total 0
+lr-x------ 1 MU MU 64 Nov  2 15:27 0 -> /dev/null
+l-wx------ 1 MU MU 64 Nov  2 15:27 1 -> pipe:[174713669]
+l-wx------ 1 MU MU 64 Nov  2 15:27 2 -> pipe:[174713669]
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space (started as PID 2985010)
+PID       = 2985010
+&secret   = 0x7ffc04c6a814
+secret    = 12345
+Inspect /proc/2985010/maps for 30 seconds.
+
+$ cat /proc/2985010/maps
+55fe938e4000-55fe938e5000 r--p 00000000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+55fe938e5000-55fe938e6000 r-xp 00001000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+55fe938e6000-55fe938e7000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+55fe938e7000-55fe938e8000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+55fe938e8000-55fe938e9000 rw-p 00003000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+55fe94d2a000-55fe94d4b000 rw-p 00000000 00:00 0                          [heap]
+7f1f7a6ca000-7f1f7a6cd000 rw-p 00000000 00:00 0 
+7f1f7a6cd000-7f1f7a6f5000 r--p 00000000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f1f7a6f5000-7f1f7a88a000 r-xp 00028000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f1f7a88a000-7f1f7a8e2000 r--p 001bd000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f1f7a8e2000-7f1f7a8e6000 r--p 00214000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f1f7a8e6000-7f1f7a8e8000 rw-p 00218000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f1f7a8e8000-7f1f7a8f5000 rw-p 00000000 00:00 0 
+7f1f7a905000-7f1f7a907000 rw-p 00000000 00:00 0 
+7f1f7a907000-7f1f7a909000 r--p 00000000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f1f7a909000-7f1f7a933000 r-xp 00002000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f1f7a933000-7f1f7a93e000 r--p 0002c000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f1f7a93f000-7f1f7a941000 r--p 00037000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f1f7a941000-7f1f7a943000 rw-p 00039000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7ffc04c4c000-7ffc04c6d000 rw-p 00000000 00:00 0                          [stack]
+7ffc04cf5000-7ffc04cf9000 r--p 00000000 00:00 0                          [vvar]
+7ffc04cf9000-7ffc04cfb000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+member1/run_missions.sh: line 94: wait: pid 2985010 is not a child of this shell
+
+Step exit status: 127
+
+===== Missions 7-14 (user-owned analogues where needed) =====
+Aggregate evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/aggregate.NmpGq9
+Started: 2026-11-02T15:27:33+05:30
+
+===== M07 current-user file mode demo =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP
+=== current account and Alice/Bob preflight ===
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+alice absent; do not create without approval.
+bob absent; do not create without approval.
+=== current-user-owned file at mode 644 ===
+-rw-r--r-- 644 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+=== same file at mode 600 ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+The current owner reads both states. No Alice/Bob or second-user access is claimed.
+Exact Alice/Bob trial still requires approved test accounts and target described in notes.md.
+===== M07 current-user file mode demo exit: 0 =====
+
+===== M08 current-user named ACL metadata demo =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+getfacl available: /usr/bin/getfacl
+setfacl available: /usr/bin/setfacl
+=== initial owner-only mode and ACL ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+group::---
+other::---
+
+=== add read-only named ACL for nobody on this self-created file ===
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+user:nobody:r--
+group::---
+mask::r--
+other::---
+
+The ACL entry and mask are demonstrated. No nobody/Bob read attempt was made.
+Actual cross-account access proof still requires the approved Alice/Bob experiment.
+===== M08 current-user named ACL metadata demo exit: 0 =====
+
+===== M09 read-only privilege inspection =====
+=== identity ===
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+=== sudo policy (non-interactive) ===
+sudo: a password is required
+=== current shell capabilities ===
+Current: =
+Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read,cap_perfmon,cap_bpf,cap_checkpoint_restore
+Ambient set =
+Current IAB: 
+Securebits: 00/0x0/1'b0
+ secure-noroot: no (unlocked)
+ secure-no-suid-fixup: no (unlocked)
+ secure-keep-caps: no (unlocked)
+ secure-no-ambient-raise: no (unlocked)
+uid=1002(MU) euid=1002(MU)
+gid=1002(MU)
+groups=1002(MU)
+Guessed mode: UNCERTAIN (0)
+=== existing /usr/bin file capabilities ===
+/usr/bin/mtr-packet cap_net_raw=ep
+/usr/bin/ping cap_net_raw=ep
+===== M09 read-only privilege inspection exit: 0 =====
+
+===== M10 compile unsafe and checked samples only =====
+Unsafe demo compiler exit code: 0
+Safe companion compiler exit code: 0
+===== M10 compile unsafe and checked samples only exit: 0 =====
+
+===== M10 run bounds-checked short/long examples =====
+Safe companion evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M10-safe.eiLTXs
+Compiler exit code: 0
+=== bounds-checked short input ===
+Selected short input: 3 bytes; capacity is 16 bytes.
+Safe copy complete: OK
+Short input exit code: 0
+=== bounds-checked long input ===
+Rejected: input does not fit in destination.
+Selected long input: 34 bytes; capacity is 16 bytes.
+Long input exit code: 1 (rejection is expected)
+===== M10 run bounds-checked short/long examples exit: 0 =====
+
+===== M11 paired build and metadata inspection only =====
+=== protected build ===
+Protected build exit code: 0
+=== reduced-compiler-protection build (inspection only; never execute) ===
+Reduced-protection build exit code: 0
+checksec unavailable
+=== system ASLR setting (read-only, unchanged) ===
+2
+=== protected GNU_STACK program header ===
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+=== reduced GNU_STACK program header ===
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+===== M11 paired build and metadata inspection only exit: 0 =====
+
+===== M12 user-owned directory and hash analogue =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+=== user-owned analogue of M12 directory/file modes ===
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/public
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/employees
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+=== current-owner traversal and read check ===
+Approved lab incident note (harmless demo)
+Current owner can traverse and read.
+=== baseline hash, verify, modify, verify again ===
+179b53f72fbce04bf8df9cf764cf2b8f957af0299af5e81dcc3cc0aa3f21c662  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: OK
+d37f91d3d4e97fe3988980d14d501dc572a4f1f12b49be3ed97c6679bad0acc1  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+Post-modification verification exit code: 1 (nonzero is expected)
+This is a current-user analogue only; it does not prove Alice/Bob access or the required /opt setup.
+===== M12 user-owned directory and hash analogue exit: 0 =====
+
+===== M13 file integrity hash experiment =====
+=== original digest ===
+7e8320091ff5b18af4c4b21db8c2bd0bbbadabe170236c86d98c433886d88dfc  config.txt
+=== original verification ===
+config.txt: OK
+=== changed digest ===
+bbd7b221e620b35e51bda162276e595fb24263fb3312b327cae37403ac840016  config.txt
+=== verification after modification (failure expected) ===
+config.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+===== M13 file integrity hash experiment exit: 0 =====
+
+===== M14 read-only log collection =====
+=== time ===
+2026-11-02T15:27:43+05:30
+=== identity ===
+MU
+=== last 30 journal entries ===
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: launch args: [--cm]
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: --cm started
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: initializing FFI cm
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init end
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler theme theme
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler language language
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:46 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:46 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Activating via systemd: service name='org.freedesktop.Tracker3.Miner.Extract' unit='tracker-extract-3.service' requested by ':1.7' (uid=1002 pid=9665 comm="/usr/libexec/tracker-miner-fs-3 " label="unconfined")
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Starting Tracker metadata extractor...
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Successfully activated service 'org.freedesktop.Tracker3.Miner.Extract'
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Started Tracker metadata extractor.
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): conversation failed
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): auth could not identify password for [MU]
+=== recent journal entries ===
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+Nov 02 15:14:38 inhydmupc0899-l xdg-desktop-por[10189]: Failed to stop screen cast session: GDBus.Error:org.freedesktop.DBus.Error.Failed: Session not started
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: Try setting transparent
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: launch args: [--cm]
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: --cm started
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: initializing FFI cm
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _globalFFI init
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _globalFFI init end
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler theme theme
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler language language
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:14:38 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1000003
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: Bring window 'null' on top
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: model  closed
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:15:29 inhydmupc0899-l xdg-desktop-por[10189]: Unhandled parent window type 
+Nov 02 15:15:29 inhydmupc0899-l xdg-desktop-por[10189]: Failed to associate portal window with parent window 
+Nov 02 15:15:29 inhydmupc0899-l gnome-shell[9828]: setup_framebuffers: assertion 'width > 0' failed
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: Try setting transparent
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: launch args: [--cm]
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: --cm started
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: initializing FFI cm
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _globalFFI init
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _globalFFI init end
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler theme theme
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler language language
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:15:48 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1800003
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: Bring window 'null' on top
+Nov 02 15:15:48 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1800003
+Nov 02 15:16:18 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: model  closed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: Try setting transparent
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: launch args: [--cm]
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: --cm started
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: initializing FFI cm
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _globalFFI init
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _globalFFI init end
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler theme theme
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler language language
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:17:25 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: Bring window 'null' on top
+Nov 02 15:17:25 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:17:55 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: model  closed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: Try setting transparent
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: launch args: [--cm]
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: --cm started
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: initializing FFI cm
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _globalFFI init
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _globalFFI init end
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler theme theme
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler language language
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:18:16 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: Bring window 'null' on top
+Nov 02 15:18:16 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:18:46 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: model  closed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: Try setting transparent
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: launch args: [--cm]
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: --cm started
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: initializing FFI cm
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _globalFFI init
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _globalFFI init end
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler theme theme
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler language language
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:22 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:23 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: Bring window 'null' on top
+Nov 02 15:25:23 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:32 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: Bring window 'null' on top
+Nov 02 15:25:32 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:25:32 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:41 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: model  closed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: Try setting transparent
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: launch args: [--cm]
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: --cm started
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: initializing FFI cm
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init end
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler theme theme
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler language language
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:46 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:46 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Activating via systemd: service name='org.freedesktop.Tracker3.Miner.Extract' unit='tracker-extract-3.service' requested by ':1.7' (uid=1002 pid=9665 comm="/usr/libexec/tracker-miner-fs-3 " label="unconfined")
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Starting Tracker metadata extractor...
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Successfully activated service 'org.freedesktop.Tracker3.Miner.Extract'
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Started Tracker metadata extractor.
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): conversation failed
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): auth could not identify password for [MU]
+=== SSH service status (read-only) ===
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2026-10-28 19:42:14 IST; 4 days ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 1080 (sshd)
+      Tasks: 1 (limit: 18726)
+     Memory: 2.8M
+        CPU: 12ms
+     CGroup: /system.slice/ssh.service
+             └─1080 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+
+Warning: some journal files were not opened due to insufficient permissions.
+=== SSH journal entries (read-only) ===
+-- No entries --
+=== recent login records ===
+MU       tty2         tty2             Wed Oct 28 14:23   still logged in
+reboot   system boot  5.15.0-43-generi Wed Oct 28 19:42   still running
+MU       tty2         tty2             Thu Oct  8 10:47 - down  (6+06:56)
+reboot   system boot  5.15.0-43-generi Thu Oct  8 14:41 - 17:44 (6+03:02)
+MU       tty2         tty2             Tue Oct  6 08:53 - down  (1+02:01)
+reboot   system boot  5.15.0-43-generi Tue Oct  6 08:52 - 10:55 (1+02:02)
+MU       pts/1        127.0.0.1        Tue Sep  8 16:08 - 16:50 (2+00:42)
+MU       tty2         tty2             Mon Sep  7 16:46 - down  (28+00:44)
+reboot   system boot  5.15.0-43-generi Mon Sep  7 16:46 - 17:31 (28+00:44)
+MU       tty2         tty2             Fri Aug 21 20:14 - down  (9+22:08)
+===== M14 read-only log collection exit: 0 =====
+
+Finished: 2026-11-02T15:27:43+05:30
+Failures or unavailable required tools: 0
+No results are added to notes automatically; review the captured outputs and report limitations.
+The opt-in unsafe M10 runtime script is deliberately excluded.
+
+Step exit status: 0
+
+===== Missions 15-21 inspection =====
+
+
+===== Collection metadata =====
+
+$ date -Is
+2026-11-02T15:27:43+05:30
+
+$ uname -a
+Linux inhydmupc0899-l 5.15.0-43-generic #46-Ubuntu SMP Tue Jul 12 10:30:17 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 22.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.1 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+
+Collector performs read-only inspection. No target state is changed.
+
+
+===== Mission 15: owned sleep process resource inspection =====
+Collector-owned sleep PID: 2985226
+
+$ ps -p 2985226 -o pid\,ppid\,uid\,euid\,nlwp\,%cpu\,%mem\,cmd
+    PID    PPID   UID  EUID NLWP %CPU %MEM CMD
+2985226 2985222  1002  1002    1  0.0  0.0 sleep 60
+
+$ ls -l /proc/2985226/fd
+total 0
+lr-x------ 1 MU MU 64 Nov  2 15:27 0 -> /dev/null
+l-wx------ 1 MU MU 64 Nov  2 15:27 1 -> pipe:[174713669]
+l-wx------ 1 MU MU 64 Nov  2 15:27 2 -> pipe:[174713669]
+
+$ grep -E \^\(Name\|Uid\|Gid\|Threads\): /proc/2985226/status
+Name:	sleep
+Uid:	1002	1002	1002	1002
+Gid:	1002	1002	1002	1002
+Threads:	1
+
+$ ss -lntup (host-wide; correlate program/PID before attribution)
+Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                                
+udp   UNCONN 0      0      127.0.0.53%lo:53         0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:631        0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:53520      0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:54469      0.0.0.0:*    users:(("rustdesk",pid=2966218,fd=36))
+udp   UNCONN 0      0            0.0.0.0:5353       0.0.0.0:*                                          
+udp   UNCONN 0      0               [::]:39559         [::]:*                                          
+udp   UNCONN 0      0               [::]:5353          [::]:*                                          
+tcp   LISTEN 0      4096   127.0.0.53%lo:53         0.0.0.0:*                                          
+tcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*                                          
+tcp   LISTEN 0      128        127.0.0.1:631        0.0.0.0:*                                          
+tcp   LISTEN 0      5            0.0.0.0:2222       0.0.0.0:*                                          
+tcp   LISTEN 0      4096       127.0.0.1:36689      0.0.0.0:*                                          
+tcp   LISTEN 0      128             [::]:22            [::]:*                                          
+
+
+===== Mission 16: Docker status only (no daemon start or container run) =====
+
+$ docker --version
+Docker version 20.10.12, build 20.10.12-0ubuntu4
+
+$ docker info --format ... (may be denied when daemon is stopped/inaccessible)
+ServerVersion=panic: reflect: indirection through nil pointer to embedded struct [recovered]
+	panic: reflect: indirection through nil pointer to embedded struct
+
+goroutine 1 [running]:
+text/template.errRecover(0xc00052f2d8)
+	/usr/lib/go-1.17/src/text/template/exec.go:169 +0x145
+panic({0x56046978faa0, 0x560469a4b3d8})
+	/usr/lib/go-1.17/src/runtime/panic.go:1038 +0x215
+reflect.Value.FieldByIndex({0x560469913080, 0xc00050ebc0, 0x0}, {0xc00047e920, 0x2, 0x56046978faa0})
+	/usr/lib/go-1.17/src/reflect/value.go:1224 +0x1e7
+text/template.(*state).evalField(0xc00052f308, {0x560469913080, 0xc00050ebc0, 0x5604686b100a}, {0x7ffce8e478a7, 0xd}, {0x560469ab62b0, 0xc000685b00}, {0xc00050d450, 0x1, ...}, ...)
+	/usr/lib/go-1.17/src/text/template/exec.go:616 +0x450
+text/template.(*state).evalFieldChain(0x7ffce8e478da, {0x560469913080, 0xc00050ebc0, 0xc0000001a0}, {0x560469913080, 0xc00050ebc0, 0xc00052ef80}, {0x560469ab62b0, 0xc000685b00}, {0xc00050d440, ...}, ...)
+	/usr/lib/go-1.17/src/text/template/exec.go:569 +0x1eb
+text/template.(*state).evalFieldNode(0x56046820e86d, {0x560469913080, 0xc00050ebc0, 0xc00052efc8}, 0x56046822a6e5, {0xc00050d450, 0xe, 0xc00052efe0}, {0x560469817980, 0x56046a9df840, ...})
+	/usr/lib/go-1.17/src/text/template/exec.go:533 +0xce
+text/template.(*state).evalCommand(0xc00052f308, {0x560469913080, 0xc00050ebc0, 0x0}, 0x0, {0x560469817980, 0x56046a9df840, 0xc00052f070})
+	/usr/lib/go-1.17/src/text/template/exec.go:461 +0x296
+text/template.(*state).evalPipeline(0xc00052f308, {0x560469913080, 0xc00050ebc0, 0xc0000d9f80}, 0xc0000c4d20)
+	/usr/lib/go-1.17/src/text/template/exec.go:435 +0x145
+text/template.(*state).walk(0xc00052f308, {0x560469913080, 0xc00050ebc0, 0x10000c00050eb40}, {0x560469ab60b8, 0xc000685c80})
+	/usr/lib/go-1.17/src/text/template/exec.go:254 +0x1f6
+text/template.(*state).walk(0xc00052f308, {0x560469913080, 0xc00050ebc0, 0x0}, {0x560469ab6388, 0xc0006859e0})
+	/usr/lib/go-1.17/src/text/template/exec.go:263 +0x37d
+text/template.(*Template).execute(0xc00050eb40, {0x560469a664a0, 0xc0002d5740}, {0x560469913080, 0xc00050ebc0})
+	/usr/lib/go-1.17/src/text/template/exec.go:217 +0x2d8
+text/template.(*Template).Execute(...)
+	/usr/lib/go-1.17/src/text/template/exec.go:200
+github.com/docker/cli/cli/command/system.formatInfo({0x560469ae2778, 0xc0006a20d0}, {0x0, {0xc00050d3e0, 0x1, 0x1}, 0xc0000ce910, {0x0, 0x0, 0x0}}, ...)
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/cli/command/system/info.go:511 +0x1a8
+github.com/docker/cli/cli/command/system.runInfo(0xc00052fcd0, {0x560469ae2778, 0xc0006a20d0}, 0xc00050cc10)
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/cli/command/system/info.go:88 +0x47d
+github.com/docker/cli/cli/command/system.NewInfoCommand.func1(0xc000026dc0, {0xc0001358c0, 0x0, 0x2})
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/cli/command/system/info.go:54 +0x25
+github.com/docker/cli/vendor/github.com/spf13/cobra.(*Command).execute(0xc000026dc0, {0xc00040f1e0, 0x2, 0x2})
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/vendor/github.com/spf13/cobra/command.go:850 +0x60e
+github.com/docker/cli/vendor/github.com/spf13/cobra.(*Command).ExecuteC(0xc00018eb00)
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/vendor/github.com/spf13/cobra/command.go:958 +0x3ad
+github.com/docker/cli/vendor/github.com/spf13/cobra.(*Command).Execute(...)
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/vendor/github.com/spf13/cobra/command.go:895
+main.runDocker(0x0)
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/cmd/docker/docker.go:287 +0x1ce
+main.main()
+	/build/docker.io-E1puQZ/docker.io-20.10.12/.gopath/src/github.com/docker/cli/cmd/docker/docker.go:298 +0x97
+[exit status 2]
+
+
+===== Mission 17: AppArmor status and loaded profiles =====
+
+$ cat /sys/module/apparmor/parameters/enabled
+Y
+
+$ aa-status
+You do not have enough privilege to read the profile set.
+apparmor module is loaded.
+[exit status 4]
+aa-unconfined unavailable
+
+
+===== Mission 18: conceptual comparison =====
+See Missions-15-22.md for DAC/MAC/RBAC/ACL/capability comparison and answers.
+
+
+===== Mission 19: read-only hardening baseline =====
+
+$ apt list --upgradable (uses current local package metadata; does not refresh it)
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Listing...
+accountsservice/jammy-updates,jammy-security 22.07.5-2ubuntu1.6 amd64 [upgradable from: 22.07.5-2ubuntu1.3]
+alsa-ucm-conf/jammy-updates,jammy-updates 1.2.6.3-1ubuntu1.12 all [upgradable from: 1.2.6.3-1ubuntu1]
+amd64-microcode/jammy-updates,jammy-security 3.20191218.1ubuntu2.3 amd64 [upgradable from: 3.20191218.1ubuntu2]
+apparmor/jammy-updates 3.0.4-2ubuntu2.5 amd64 [upgradable from: 3.0.4-2ubuntu2.1]
+apport-gtk/jammy-updates,jammy-updates,jammy-security,jammy-security 2.20.11-0ubuntu82.10 all [upgradable from: 2.20.11-0ubuntu82.1]
+apport/jammy-updates,jammy-updates,jammy-security,jammy-security 2.20.11-0ubuntu82.10 all [upgradable from: 2.20.11-0ubuntu82.1]
+apt-transport-https/jammy-updates,jammy-updates 2.4.14 all [upgradable from: 2.4.8]
+apt-utils/jammy-updates 2.4.14 amd64 [upgradable from: 2.4.6]
+apt/jammy-updates 2.4.14 amd64 [upgradable from: 2.4.6]
+avahi-autoipd/jammy-updates,jammy-security 0.8-5ubuntu5.5 amd64 [upgradable from: 0.8-5ubuntu5]
+avahi-daemon/jammy-updates,jammy-security 0.8-5ubuntu5.5 amd64 [upgradable from: 0.8-5ubuntu5]
+avahi-utils/jammy-updates,jammy-security 0.8-5ubuntu5.5 amd64 [upgradable from: 0.8-5ubuntu5]
+base-files/jammy-updates 12ubuntu4.7 amd64 [upgradable from: 12ubuntu4.2]
+bash/jammy-updates,jammy-security 5.1-6ubuntu1.1 amd64 [upgradable from: 5.1-6ubuntu1]
+bind9-dnsutils/jammy-updates,jammy-security 1:9.18.39-0ubuntu0.22.04.7 amd64 [upgradable from: 1:9.18.1-1ubuntu1.1]
+bind9-host/jammy-updates,jammy-security 1:9.18.39-0ubuntu0.22.04.7 amd64 [upgradable from: 1:9.18.1-1ubuntu1.1]
+bind9-libs/jammy-updates,jammy-security 1:9.18.39-0ubuntu0.22.04.7 amd64 [upgradable from: 1:9.18.1-1ubuntu1.1]
+binutils-common/jammy-updates,jammy-security 2.38-4ubuntu2.12 amd64 [upgradable from: 2.38-4ubuntu2.1]
+binutils-x86-64-linux-gnu/jammy-updates,jammy-security 2.38-4ubuntu2.12 amd64 [upgradable from: 2.38-4ubuntu2.1]
+binutils/jammy-updates,jammy-security 2.38-4ubuntu2.12 amd64 [upgradable from: 2.38-4ubuntu2.1]
+bluez-cups/jammy-updates,jammy-security 5.64-0ubuntu1.6 amd64 [upgradable from: 5.64-0ubuntu1]
+bluez-obexd/jammy-updates,jammy-security 5.64-0ubuntu1.6 amd64 [upgradable from: 5.64-0ubuntu1]
+bluez/jammy-updates,jammy-security 5.64-0ubuntu1.6 amd64 [upgradable from: 5.64-0ubuntu1]
+bsdextrautils/jammy-updates,jammy-security 2.37.2-4ubuntu3.6 amd64 [upgradable from: 2.37.2-4ubuntu3]
+bsdutils/jammy-updates,jammy-security 1:2.37.2-4ubuntu3.6 amd64 [upgradable from: 1:2.37.2-4ubuntu3]
+bubblewrap/jammy-updates,jammy-security 0.6.1-1ubuntu0.3 amd64 [upgradable from: 0.6.1-1]
+
+$ systemctl --type=service --state=running --no-pager
+  UNIT                          LOAD   ACTIVE SUB     DESCRIPTION
+  accounts-daemon.service       loaded active running Accounts Service
+  acpid.service                 loaded active running ACPI event daemon
+  avahi-daemon.service          loaded active running Avahi mDNS/DNS-SD Stack
+  colord.service                loaded active running Manage, Install and Generate Color Profiles
+  containerd.service            loaded active running containerd container runtime
+  cron.service                  loaded active running Regular background program processing daemon
+  cups-browsed.service          loaded active running Make remote CUPS printers available locally
+  cups.service                  loaded active running CUPS Scheduler
+  dbus.service                  loaded active running D-Bus System Message Bus
+  docker.service                loaded active running Docker Application Container Engine
+  epsdaemon.service             loaded active running eScan USB blocking daemon
+  gdm.service                   loaded active running GNOME Display Manager
+  irqbalance.service            loaded active running irqbalance daemon
+  kerneloops.service            loaded active running Tool to automatically collect and submit kernel crash signatures
+  ModemManager.service          loaded active running Modem Manager
+  mwagent.service               loaded active running eScan Anti-Virus daemon
+  mwconnect.service             loaded active running eScan live status daemon
+  mwprintd.service              loaded active running Emacs: eScan's mwprintd daemon
+  networkd-dispatcher.service   loaded active running Dispatcher daemon for systemd-networkd
+  NetworkManager.service        loaded active running Network Manager
+  packagekit.service            loaded active running PackageKit Daemon
+  polkit.service                loaded active running Authorization Manager
+  power-profiles-daemon.service loaded active running Power Profiles daemon
+  rsyslog.service               loaded active running System Logging Service
+  rtkit-daemon.service          loaded active running RealtimeKit Scheduling Policy Service
+  rtscanner.service             loaded active running eScan Anti-Virus daemon
+  snapd.service                 loaded active running Snap Daemon
+  ssh.service                   loaded active running OpenBSD Secure Shell server
+  switcheroo-control.service    loaded active running Switcheroo Control Proxy service
+  systemd-journald.service      loaded active running Journal Service
+  systemd-logind.service        loaded active running User Login Management
+  systemd-oomd.service          loaded active running Userspace Out-Of-Memory (OOM) Killer
+  systemd-resolved.service      loaded active running Network Name Resolution
+  systemd-timesyncd.service     loaded active running Network Time Synchronization
+  systemd-udevd.service         loaded active running Rule-based Manager for Device Events and Files
+  thermald.service              loaded active running Thermal Daemon Service
+  udisks2.service               loaded active running Disk Manager
+  unattended-upgrades.service   loaded active running Unattended Upgrades Shutdown
+  upower.service                loaded active running Daemon for power management
+  user@1002.service             loaded active running User Manager for UID 1002
+  wazuh-agent.service           loaded active running Wazuh agent
+  winclient.service             loaded active running eScan Anti-Virus support daemon
+  wpa_supplicant.service        loaded active running WPA supplicant
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+43 loaded units listed.
+
+$ ss -lntup
+Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess                                
+udp   UNCONN 0      0      127.0.0.53%lo:53         0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:631        0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:53520      0.0.0.0:*                                          
+udp   UNCONN 0      0            0.0.0.0:54469      0.0.0.0:*    users:(("rustdesk",pid=2966218,fd=36))
+udp   UNCONN 0      0            0.0.0.0:5353       0.0.0.0:*                                          
+udp   UNCONN 0      0               [::]:39559         [::]:*                                          
+udp   UNCONN 0      0               [::]:5353          [::]:*                                          
+tcp   LISTEN 0      4096   127.0.0.53%lo:53         0.0.0.0:*                                          
+tcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*                                          
+tcp   LISTEN 0      128        127.0.0.1:631        0.0.0.0:*                                          
+tcp   LISTEN 0      5            0.0.0.0:2222       0.0.0.0:*                                          
+tcp   LISTEN 0      4096       127.0.0.1:36689      0.0.0.0:*                                          
+tcp   LISTEN 0      128             [::]:22            [::]:*                                          
+
+$ ufw status verbose
+ERROR: You need to be root to run this script
+[exit status 1]
+
+
+===== Mission 20: SSH server status and non-secret configuration metadata =====
+
+$ sshd -V
+unknown option -- V
+OpenSSH_8.9p1 Ubuntu-3ubuntu0.1, OpenSSL 3.0.2 15 Mar 2022
+usage: sshd [-46DdeiqTt] [-C connection_spec] [-c host_cert_file]
+            [-E log_file] [-f config_file] [-g login_grace_time]
+            [-h host_key_file] [-o option] [-p port] [-u len]
+[exit status 1]
+
+$ systemctl is-active ssh
+active
+
+$ systemctl is-active sshd
+active
+
+$ systemctl is-enabled ssh
+enabled
+
+$ systemctl is-enabled sshd
+alias
+
+$ ss -ltn (check whether local port 22 is listening)
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      128          0.0.0.0:22         0.0.0.0:*          
+LISTEN 0      128             [::]:22            [::]:*          
+
+SSH config file metadata and directive names only (values are not printed):
+644 root:root /etc/ssh/sshd_config
+  directive=include
+  directive=permitrootlogin
+  directive=kbdinteractiveauthentication
+  directive=usepam
+  directive=x11forwarding
+  directive=printmotd
+  directive=acceptenv
+  directive=subsystem
+
+
+===== Mission 21: virtualization identification =====
+
+$ systemd-detect-virt
+none
+[exit status 1]
+
+$ uname -a
+Linux inhydmupc0899-l 5.15.0-43-generic #46-Ubuntu SMP Tue Jul 12 10:30:17 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+
+===== End of collection =====
+Review each result for privilege limits and target context. This collector does not establish findings or remediation success.
+
+Step exit status: 0
+
+===== M15 supplementary resource-limit demonstration =====
+M15 supplementary demonstration: own child process with RLIMIT_NOFILE=16 and RLIMIT_CPU=2/3 seconds
+This is not a complete sandbox: it does not isolate filesystems, networking, syscalls, or namespaces.
+child pid=2985277 RLIMIT_NOFILE soft=16 hard=16
+open denied at descriptor limit after 13 additional descriptors: [Errno 24] Too many open files: '/dev/null'
+child exit status=0
+
+Step exit status: 0
+
+Runner steps with failures: 1
+Review all logs before marking missions verified. M22 requires separate instructor resources.
+SECURELAB_RUN_FINISHED exit=0

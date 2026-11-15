@@ -1,0 +1,13 @@
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP
+=== current account and Alice/Bob preflight ===
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+alice absent; do not create without approval.
+bob absent; do not create without approval.
+=== current-user-owned file at mode 644 ===
+-rw-r--r-- 644 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+=== same file at mode 600 ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+The current owner reads both states. No Alice/Bob or second-user access is claimed.
+Exact Alice/Bob trial still requires approved test accounts and target described in notes.md.

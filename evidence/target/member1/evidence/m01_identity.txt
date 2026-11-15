@@ -1,0 +1,24 @@
+
+$ id
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+
+$ groups
+MU
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/identity
+Real UID         : 1002
+Effective UID    : 1002
+Real GID         : 1002
+Effective GID    : 1002
+
+$ id
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+
+$ groups
+MU
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/identity
+Real UID         : 1002
+Effective UID    : 1002
+Real GID         : 1002
+Effective GID    : 1002

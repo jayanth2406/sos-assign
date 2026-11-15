@@ -1,0 +1,26 @@
+$ sleep 120 &
+PID=2987690
+$ ps -p 2987690 -o pid,ppid,uid,cmd
+    PID    PPID   UID CMD
+2987690 2987636  1002 sleep 120
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/src/proc_inspector.sh 2987690
+PID: 2987690
+Command: sleep 120 
+Name:	sleep
+State:	S (sleeping)
+PPid:	2987636
+Uid:	1002	1002	1002	1002
+Gid:	1002	1002	1002	1002
+VmSize:	   17024 kB
+VmRSS:	    1004 kB
+Threads:	1
+CapEff:	0000000000000000
+Open file descriptors: 3
+Start time (clock ticks since boot): 43676417
+
+$ ls -l /proc/2987690/fd
+total 0
+lr-x------ 1 MU MU 64 Nov  2 15:31 0 -> /dev/null
+l-wx------ 1 MU MU 64 Nov  2 15:31 1 -> /home/MU/Downloads/sos/securelab-20261102-152707/evidence/member1_rerun.log
+l-wx------ 1 MU MU 64 Nov  2 15:31 2 -> /home/MU/Downloads/sos/securelab-20261102-152707/evidence/member1_rerun.log

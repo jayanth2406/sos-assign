@@ -1,0 +1,10 @@
+Safe companion evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M10-safe.eiLTXs
+Compiler exit code: 0
+=== bounds-checked short input ===
+Selected short input: 3 bytes; capacity is 16 bytes.
+Safe copy complete: OK
+Short input exit code: 0
+=== bounds-checked long input ===
+Rejected: input does not fit in destination.
+Selected long input: 34 bytes; capacity is 16 bytes.
+Long input exit code: 1 (rejection is expected)

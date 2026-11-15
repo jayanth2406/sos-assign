@@ -1,0 +1,12 @@
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1013183
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1782455

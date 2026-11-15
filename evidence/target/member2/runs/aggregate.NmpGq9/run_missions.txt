@@ -1,0 +1,415 @@
+Aggregate evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/aggregate.NmpGq9
+Started: 2026-11-02T15:27:33+05:30
+
+===== M07 current-user file mode demo =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP
+=== current account and Alice/Bob preflight ===
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+alice absent; do not create without approval.
+bob absent; do not create without approval.
+=== current-user-owned file at mode 644 ===
+-rw-r--r-- 644 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+=== same file at mode 600 ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M07.b93CWP/current_user_secret.txt
+M07 harmless test data
+The current owner reads both states. No Alice/Bob or second-user access is claimed.
+Exact Alice/Bob trial still requires approved test accounts and target described in notes.md.
+===== M07 current-user file mode demo exit: 0 =====
+
+===== M08 current-user named ACL metadata demo =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+getfacl available: /usr/bin/getfacl
+setfacl available: /usr/bin/setfacl
+=== initial owner-only mode and ACL ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+group::---
+other::---
+
+=== add read-only named ACL for nobody on this self-created file ===
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+user:nobody:r--
+group::---
+mask::r--
+other::---
+
+The ACL entry and mask are demonstrated. No nobody/Bob read attempt was made.
+Actual cross-account access proof still requires the approved Alice/Bob experiment.
+===== M08 current-user named ACL metadata demo exit: 0 =====
+
+===== M09 read-only privilege inspection =====
+=== identity ===
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+=== sudo policy (non-interactive) ===
+sudo: a password is required
+=== current shell capabilities ===
+Current: =
+Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read,cap_perfmon,cap_bpf,cap_checkpoint_restore
+Ambient set =
+Current IAB: 
+Securebits: 00/0x0/1'b0
+ secure-noroot: no (unlocked)
+ secure-no-suid-fixup: no (unlocked)
+ secure-keep-caps: no (unlocked)
+ secure-no-ambient-raise: no (unlocked)
+uid=1002(MU) euid=1002(MU)
+gid=1002(MU)
+groups=1002(MU)
+Guessed mode: UNCERTAIN (0)
+=== existing /usr/bin file capabilities ===
+/usr/bin/mtr-packet cap_net_raw=ep
+/usr/bin/ping cap_net_raw=ep
+===== M09 read-only privilege inspection exit: 0 =====
+
+===== M10 compile unsafe and checked samples only =====
+Unsafe demo compiler exit code: 0
+Safe companion compiler exit code: 0
+===== M10 compile unsafe and checked samples only exit: 0 =====
+
+===== M10 run bounds-checked short/long examples =====
+Safe companion evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M10-safe.eiLTXs
+Compiler exit code: 0
+=== bounds-checked short input ===
+Selected short input: 3 bytes; capacity is 16 bytes.
+Safe copy complete: OK
+Short input exit code: 0
+=== bounds-checked long input ===
+Rejected: input does not fit in destination.
+Selected long input: 34 bytes; capacity is 16 bytes.
+Long input exit code: 1 (rejection is expected)
+===== M10 run bounds-checked short/long examples exit: 0 =====
+
+===== M11 paired build and metadata inspection only =====
+=== protected build ===
+Protected build exit code: 0
+=== reduced-compiler-protection build (inspection only; never execute) ===
+Reduced-protection build exit code: 0
+checksec unavailable
+=== system ASLR setting (read-only, unchanged) ===
+2
+=== protected GNU_STACK program header ===
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+=== reduced GNU_STACK program header ===
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10
+===== M11 paired build and metadata inspection only exit: 0 =====
+
+===== M12 user-owned directory and hash analogue =====
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+=== user-owned analogue of M12 directory/file modes ===
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/public
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/employees
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+=== current-owner traversal and read check ===
+Approved lab incident note (harmless demo)
+Current owner can traverse and read.
+=== baseline hash, verify, modify, verify again ===
+179b53f72fbce04bf8df9cf764cf2b8f957af0299af5e81dcc3cc0aa3f21c662  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: OK
+d37f91d3d4e97fe3988980d14d501dc572a4f1f12b49be3ed97c6679bad0acc1  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+Post-modification verification exit code: 1 (nonzero is expected)
+This is a current-user analogue only; it does not prove Alice/Bob access or the required /opt setup.
+===== M12 user-owned directory and hash analogue exit: 0 =====
+
+===== M13 file integrity hash experiment =====
+=== original digest ===
+7e8320091ff5b18af4c4b21db8c2bd0bbbadabe170236c86d98c433886d88dfc  config.txt
+=== original verification ===
+config.txt: OK
+=== changed digest ===
+bbd7b221e620b35e51bda162276e595fb24263fb3312b327cae37403ac840016  config.txt
+=== verification after modification (failure expected) ===
+config.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+===== M13 file integrity hash experiment exit: 0 =====
+
+===== M14 read-only log collection =====
+=== time ===
+2026-11-02T15:27:43+05:30
+=== identity ===
+MU
+=== last 30 journal entries ===
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: launch args: [--cm]
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: --cm started
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: initializing FFI cm
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init end
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler theme theme
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler language language
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:46 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:46 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Activating via systemd: service name='org.freedesktop.Tracker3.Miner.Extract' unit='tracker-extract-3.service' requested by ':1.7' (uid=1002 pid=9665 comm="/usr/libexec/tracker-miner-fs-3 " label="unconfined")
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Starting Tracker metadata extractor...
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Successfully activated service 'org.freedesktop.Tracker3.Miner.Extract'
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Started Tracker metadata extractor.
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): conversation failed
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): auth could not identify password for [MU]
+=== recent journal entries ===
+Hint: You are currently not seeing messages from other users and the system.
+      Users in groups 'adm', 'systemd-journal' can see all messages.
+      Pass -q to turn off this notice.
+Nov 02 15:14:38 inhydmupc0899-l xdg-desktop-por[10189]: Failed to stop screen cast session: GDBus.Error:org.freedesktop.DBus.Error.Failed: Session not started
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: Try setting transparent
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: launch args: [--cm]
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: --cm started
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: initializing FFI cm
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _globalFFI init
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: _globalFFI init end
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler theme theme
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler language language
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:14:38 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1000003
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: Bring window 'null' on top
+Nov 02 15:14:38 inhydmupc0899-l org.gnome.Nautilus[2976035]: flutter: model  closed
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:14:38 inhydmupc0899-l rustdesk[2976035]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:15:29 inhydmupc0899-l xdg-desktop-por[10189]: Unhandled parent window type 
+Nov 02 15:15:29 inhydmupc0899-l xdg-desktop-por[10189]: Failed to associate portal window with parent window 
+Nov 02 15:15:29 inhydmupc0899-l gnome-shell[9828]: setup_framebuffers: assertion 'width > 0' failed
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: Try setting transparent
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: launch args: [--cm]
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: --cm started
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: initializing FFI cm
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _globalFFI init
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: _globalFFI init end
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler theme theme
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler language language
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:15:48 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1800003
+Nov 02 15:15:48 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: Bring window 'null' on top
+Nov 02 15:15:48 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1800003
+Nov 02 15:16:18 inhydmupc0899-l org.gnome.Nautilus[2976582]: flutter: model  closed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:16:18 inhydmupc0899-l rustdesk[2976582]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: Try setting transparent
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: launch args: [--cm]
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: --cm started
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: initializing FFI cm
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _globalFFI init
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: _globalFFI init end
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler theme theme
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler language language
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:17:25 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:17:25 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: Bring window 'null' on top
+Nov 02 15:17:25 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:17:55 inhydmupc0899-l org.gnome.Nautilus[2978151]: flutter: model  closed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:17:55 inhydmupc0899-l rustdesk[2978151]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: Try setting transparent
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: launch args: [--cm]
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: --cm started
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: initializing FFI cm
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _globalFFI init
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: _globalFFI init end
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler theme theme
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler language language
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:18:16 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:18:16 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: Bring window 'null' on top
+Nov 02 15:18:16 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:18:46 inhydmupc0899-l org.gnome.Nautilus[2978586]: flutter: model  closed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:18:46 inhydmupc0899-l rustdesk[2978586]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: Try setting transparent
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: launch args: [--cm]
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: --cm started
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: initializing FFI cm
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _globalFFI init
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: _globalFFI init end
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler theme theme
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler language language
+Nov 02 15:25:22 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:22 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:23 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: Bring window 'null' on top
+Nov 02 15:25:23 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:32 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: Bring window 'null' on top
+Nov 02 15:25:32 inhydmupc0899-l org.gnome.Nautilus[2966218]: Failed to start wayland: MissingProtocol, fall back to x11
+Nov 02 15:25:32 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:41 inhydmupc0899-l org.gnome.Nautilus[2983051]: flutter: model  closed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_widget_set_opacity: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_get_position: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_get_size: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_widget_hide: assertion 'GTK_IS_WIDGET (widget)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_move: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: gtk_window_resize: assertion 'GTK_IS_WINDOW (window)' failed
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:41 inhydmupc0899-l rustdesk[2983051]: Attempted to set message handler on an FlBinaryMessenger without an engine
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: Try setting transparent
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: launch args: [--cm]
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: --cm started
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: initializing FFI cm
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _appType:cm,info1-id:11d94c907c0e4bfaa57f45f4a8bd2596,info2-name:Ubuntu,dir:/home/MU/Documents
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_address_book_peers address book peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_group_peers group peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_recent_peers recent peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_fav_peers fav peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler callback_query_onlines discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler load_lan_peers discovered peer
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: _globalFFI init end
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler theme theme
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler language language
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: registerEventHandler native_ui native_ui
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:43 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:43 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:25:46 inhydmupc0899-l org.gnome.Nautilus[2983310]: flutter: Bring window 'null' on top
+Nov 02 15:25:46 inhydmupc0899-l gnome-shell[9828]: Window manager warning: Buggy client sent a _NET_ACTIVE_WINDOW message with a timestamp of 0 for 0x1a00003
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Activating via systemd: service name='org.freedesktop.Tracker3.Miner.Extract' unit='tracker-extract-3.service' requested by ':1.7' (uid=1002 pid=9665 comm="/usr/libexec/tracker-miner-fs-3 " label="unconfined")
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Starting Tracker metadata extractor...
+Nov 02 15:27:07 inhydmupc0899-l dbus-daemon[9640]: [session uid=1002 pid=9640] Successfully activated service 'org.freedesktop.Tracker3.Miner.Extract'
+Nov 02 15:27:07 inhydmupc0899-l systemd[9616]: Started Tracker metadata extractor.
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): conversation failed
+Nov 02 15:27:43 inhydmupc0899-l sudo[2985066]: pam_unix(sudo:auth): auth could not identify password for [MU]
+=== SSH service status (read-only) ===
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2026-10-28 19:42:14 IST; 4 days ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 1080 (sshd)
+      Tasks: 1 (limit: 18726)
+     Memory: 2.8M
+        CPU: 12ms
+     CGroup: /system.slice/ssh.service
+             └─1080 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+
+Warning: some journal files were not opened due to insufficient permissions.
+=== SSH journal entries (read-only) ===
+-- No entries --
+=== recent login records ===
+MU       tty2         tty2             Wed Oct 28 14:23   still logged in
+reboot   system boot  5.15.0-43-generi Wed Oct 28 19:42   still running
+MU       tty2         tty2             Thu Oct  8 10:47 - down  (6+06:56)
+reboot   system boot  5.15.0-43-generi Thu Oct  8 14:41 - 17:44 (6+03:02)
+MU       tty2         tty2             Tue Oct  6 08:53 - down  (1+02:01)
+reboot   system boot  5.15.0-43-generi Tue Oct  6 08:52 - 10:55 (1+02:02)
+MU       pts/1        127.0.0.1        Tue Sep  8 16:08 - 16:50 (2+00:42)
+MU       tty2         tty2             Mon Sep  7 16:46 - down  (28+00:44)
+reboot   system boot  5.15.0-43-generi Mon Sep  7 16:46 - 17:31 (28+00:44)
+MU       tty2         tty2             Fri Aug 21 20:14 - down  (9+22:08)
+===== M14 read-only log collection exit: 0 =====
+
+Finished: 2026-11-02T15:27:43+05:30
+Failures or unavailable required tools: 0
+No results are added to notes automatically; review the captured outputs and report limitations.
+The opt-in unsafe M10 runtime script is deliberately excluded.

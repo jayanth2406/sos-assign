@@ -1,0 +1,28 @@
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+getfacl available: /usr/bin/getfacl
+setfacl available: /usr/bin/setfacl
+=== initial owner-only mode and ACL ===
+-rw------- 600 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+group::---
+other::---
+
+=== add read-only named ACL for nobody on this self-created file ===
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+getfacl: Removing leading '/' from absolute path names
+# file: home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M08.4L02Df/acl_demo.txt
+# owner: MU
+# group: MU
+user::rw-
+user:nobody:r--
+group::---
+mask::r--
+other::---
+
+The ACL entry and mask are demonstrated. No nobody/Bob read attempt was made.
+Actual cross-account access proof still requires the approved Alice/Bob experiment.

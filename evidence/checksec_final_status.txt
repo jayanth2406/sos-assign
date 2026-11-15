@@ -1,0 +1,9 @@
+<checksec --file=../memory_reduced) > evidence/m11_checksec.txt 2>&1
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <intf 'CHECKSEC_FINAL_EXIT=%s\n' "$?"; cat evidence/m11_checksec.txt
+CHECKSEC_FINAL_EXIT=0
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
+Full RELRO      Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   43) Symbols	  No	0		3		../memory_protected
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
+Partial RELRO   No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   40) Symbols	  No	0		3		../memory_reduced
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

@@ -1,0 +1,16 @@
+stty -echo
+Zpcm9ubWVudMU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ > > > > > SECURELAB_RUNNERS_PATCHED
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <vidence/member1_rerun_exit.txt' > evidence/member1_rerun.log 2>&1 &
+[1] 2987632
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <ecurelab-20261102-152707$ printf 'SECURELAB_M1_RERUN_PID=%s\n' "$!"
+SECURELAB_M1_RERUN_PID=2987632
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <host 'printf SECURELAB_SSH_LOGIN_OK'; printf '\nSSH_EXIT=%s\n' "$?"
+/usr/bin/bwrap
+/usr/bin/unshare
+/usr/bin/ssh
+
+=== LOCALHOST SSH NONINTERACTIVE CHECK ===
+MU@localhost: Permission denied (publickey,password).
+
+SSH_EXIT=255
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

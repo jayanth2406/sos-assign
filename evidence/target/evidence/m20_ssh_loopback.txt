@@ -1,0 +1,5 @@
+Temporary key added for this account; testing authenticated localhost access.
+SECURELAB_SSH_LOGIN_OK
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+SSH exit status: 0
+Temporary authorized key removed; original entries preserved.

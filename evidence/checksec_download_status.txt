@@ -1,0 +1,9 @@
+stty -echo
+gcHJpbnQoJ1MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <>&1; printf 'M20_EXIT=%s\n' "$?"; cat evidence/m20_ssh_loopback.txt
+M20_EXIT=0
+Temporary key added for this account; testing authenticated localhost access.
+SECURELAB_SSH_LOGIN_OK
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+SSH exit status: 0
+Temporary authorized key removed; original entries preserved.
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

@@ -1,0 +1,4 @@
+PID       = 2987707
+&secret   = 0x7fff44b35a44
+secret    = 12345
+Inspect /proc/2987707/maps for 30 seconds.

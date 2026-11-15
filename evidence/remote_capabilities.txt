@@ -1,0 +1,35 @@
+cd "$(cat "$HOME/Downloads/sos/.securelab-current")"
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ mkdir -p evidence
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ printf '\n=== target capabilities ===\n'
+
+=== target capabilities ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <102-152707$ uname -a; free -h; df -h .; systemd-detect-virt || true
+Linux inhydmupc0899-l 5.15.0-43-generic #46-Ubuntu SMP Tue Jul 12 10:30:17 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       1.6Gi       224Mi       463Mi        13Gi        12Gi
+Swap:          2.0Gi       375Mi       1.6Gi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p6  486G   31G  430G   7% /
+none
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ printf '\n=== tools ===\n'
+
+=== tools ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <cksec aa-status docker timeout; do command -v "$tool" || true; done
+/usr/bin/gcc
+/usr/bin/strace
+/usr/bin/getfacl
+/usr/bin/setfacl
+/usr/sbin/aa-status
+/usr/bin/docker
+/usr/bin/timeout
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <ab-20261102-152707$ printf '\n=== existing project resources ===\n'
+
+=== existing project resources ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <th 2 -type f -not -path '*/securelab-*/*' -printf '%P\n' | head -40
+.securelab-current
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <RELAB_RUN_FINISHED exit=%s\n" "$rc"' > evidence/launcher.log 2>&1 &
+[1] 2984931
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <02-152707$ printf 'SECURELAB_RUN_PID=%s WORKSPACE=%s\n' "$!" "$PWD"
+SECURELAB_RUN_PID=2984931 WORKSPACE=/home/MU/Downloads/sos/securelab-20261102-152707
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

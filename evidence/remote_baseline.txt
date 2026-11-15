@@ -1,0 +1,21 @@
+<s; id; cat /etc/os-release; pwd; command -v gcc; command -v python3
+
+SECURELAB_LIVE_CHECK
+2026-11-02T15:26:27+05:30
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+PRETTY_NAME="Ubuntu 22.04.1 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.1 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+/home/MU
+/usr/bin/gcc
+/usr/bin/python3
+MU@inhydmupc0899-l:~$ 

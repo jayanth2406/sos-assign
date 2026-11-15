@@ -1,0 +1,124 @@
+nohup: ignoring input
+SECURELAB Person 1 evidence run
+Timestamp (UTC): 2026-11-02T10:01:35Z
+Host: inhydmupc0899-l
+User: MU
+Repository path: /home/MU/Downloads/sos/securelab-20261102-152707
+This run records this machine's output; no values are pre-filled.
+
+$ id
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+
+$ groups
+MU
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/identity
+Real UID         : 1002
+Effective UID    : 1002
+Real GID         : 1002
+Effective GID    : 1002
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/syscall_demo
+
+$ cat hello.txt
+Hello from user space!
+
+$ strace -o /home/MU/Downloads/sos/securelab-20261102-152707/member1/evidence/m02_trace.txt /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/syscall_demo
+
+Relevant calls from the captured trace:
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+close(3)                                = 0
+openat(AT_FDCWD, "hello.txt", O_WRONLY|O_CREAT|O_TRUNC, 0644) = 3
+write(3, "Hello from user space!\n", 23) = 23
+close(3)                                = 0
+$ sleep 120 &
+PID=2987690
+$ ps -p 2987690 -o pid,ppid,uid,cmd
+    PID    PPID   UID CMD
+2987690 2987636  1002 sleep 120
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/src/proc_inspector.sh 2987690
+PID: 2987690
+Command: sleep 120 
+Name:	sleep
+State:	S (sleeping)
+PPid:	2987636
+Uid:	1002	1002	1002	1002
+Gid:	1002	1002	1002	1002
+VmSize:	   17024 kB
+VmRSS:	    1004 kB
+Threads:	1
+CapEff:	0000000000000000
+Open file descriptors: 3
+Start time (clock ticks since boot): 43676417
+
+$ ls -l /proc/2987690/fd
+total 0
+lr-x------ 1 MU MU 64 Nov  2 15:31 0 -> /dev/null
+l-wx------ 1 MU MU 64 Nov  2 15:31 1 -> /home/MU/Downloads/sos/securelab-20261102-152707/evidence/member1_rerun.log
+l-wx------ 1 MU MU 64 Nov  2 15:31 2 -> /home/MU/Downloads/sos/securelab-20261102-152707/evidence/member1_rerun.log
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space (started as PID 2987707)
+PID       = 2987707
+&secret   = 0x7fff44b35a44
+secret    = 12345
+Inspect /proc/2987707/maps for 30 seconds.
+
+$ cat /proc/2987707/maps
+56254aa69000-56254aa6a000 r--p 00000000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6a000-56254aa6b000 r-xp 00001000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6b000-56254aa6c000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6c000-56254aa6d000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6d000-56254aa6e000 rw-p 00003000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254bbf4000-56254bc15000 rw-p 00000000 00:00 0                          [heap]
+7f012959e000-7f01295a1000 rw-p 00000000 00:00 0 
+7f01295a1000-7f01295c9000 r--p 00000000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01295c9000-7f012975e000 r-xp 00028000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f012975e000-7f01297b6000 r--p 001bd000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297b6000-7f01297ba000 r--p 00214000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297ba000-7f01297bc000 rw-p 00218000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297bc000-7f01297c9000 rw-p 00000000 00:00 0 
+7f01297d9000-7f01297db000 rw-p 00000000 00:00 0 
+7f01297db000-7f01297dd000 r--p 00000000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f01297dd000-7f0129807000 r-xp 00002000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129807000-7f0129812000 r--p 0002c000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129813000-7f0129815000 r--p 00037000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129815000-7f0129817000 rw-p 00039000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7fff44b17000-7fff44b38000 rw-p 00000000 00:00 0                          [stack]
+7fff44bc6000-7fff44bca000 r--p 00000000 00:00 0                          [vvar]
+7fff44bca000-7fff44bcc000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+
+$ wait 2987707
+address_space exit status: 0
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1013183
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1782455
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/pipe_ipc
+Child received: Hello from the parent
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/shared_memory_ipc
+Parent wrote shared memory; object mode is 0600.
+Child read shared memory: Hello through shared memory
+The shared-memory program is a team-authored POSIX shm_open/mmap demonstration; no instructor implementation was included in the supplied PDFs. See notes/Missions_1-6_answers.md for the comparison.
+
+Evidence files created under /home/MU/Downloads/sos/securelab-20261102-152707/member1/evidence

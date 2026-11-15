@@ -1,0 +1,4 @@
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/shared_memory_ipc
+Parent wrote shared memory; object mode is 0600.
+Child read shared memory: Hello through shared memory

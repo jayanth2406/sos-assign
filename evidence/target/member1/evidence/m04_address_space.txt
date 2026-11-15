@@ -1,0 +1,33 @@
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space (started as PID 2987707)
+PID       = 2987707
+&secret   = 0x7fff44b35a44
+secret    = 12345
+Inspect /proc/2987707/maps for 30 seconds.
+
+$ cat /proc/2987707/maps
+56254aa69000-56254aa6a000 r--p 00000000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6a000-56254aa6b000 r-xp 00001000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6b000-56254aa6c000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6c000-56254aa6d000 r--p 00002000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254aa6d000-56254aa6e000 rw-p 00003000 103:06 3149611                   /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/address_space
+56254bbf4000-56254bc15000 rw-p 00000000 00:00 0                          [heap]
+7f012959e000-7f01295a1000 rw-p 00000000 00:00 0 
+7f01295a1000-7f01295c9000 r--p 00000000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01295c9000-7f012975e000 r-xp 00028000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f012975e000-7f01297b6000 r--p 001bd000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297b6000-7f01297ba000 r--p 00214000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297ba000-7f01297bc000 rw-p 00218000 103:06 23468377                  /usr/lib/x86_64-linux-gnu/libc.so.6
+7f01297bc000-7f01297c9000 rw-p 00000000 00:00 0 
+7f01297d9000-7f01297db000 rw-p 00000000 00:00 0 
+7f01297db000-7f01297dd000 r--p 00000000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f01297dd000-7f0129807000 r-xp 00002000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129807000-7f0129812000 r--p 0002c000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129813000-7f0129815000 r--p 00037000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f0129815000-7f0129817000 rw-p 00039000 103:06 23468040                  /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7fff44b17000-7fff44b38000 rw-p 00000000 00:00 0                          [stack]
+7fff44bc6000-7fff44bca000 r--p 00000000 00:00 0                          [vvar]
+7fff44bca000-7fff44bcc000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+
+$ wait 2987707
+address_space exit status: 0

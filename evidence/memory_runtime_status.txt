@@ -1,0 +1,21 @@
+<s\n' "$selection" "$?"; done) > evidence/m10_bwrap_runtime.txt 2>&1
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ cat evidence/m10_bwrap_runtime.txt
+
+=== M10 ROOTLESS BWRAP: short ===
+Selected short input: copying 3 bytes into a 16-byte buffer...
+Program reached the end of the copy.
+M10_short_EXIT=0
+
+=== M10 ROOTLESS BWRAP: long ===
+*** stack smashing detected ***: terminated
+M10_long_EXIT=134
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ printf '\n=== M11 BINARY NAMES ===\n'
+
+=== M11 BINARY NAMES ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <0261102-152707$ find member2/M11 -maxdepth 1 -type f -printf '%f\n'
+memory_reduced
+inspect.sh
+memory_protected
+notes.md
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

@@ -1,0 +1,19 @@
+Evidence directory: /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT
+uid=1002(MU) gid=1002(MU) groups=1002(MU)
+=== user-owned analogue of M12 directory/file modes ===
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab
+drwxr-xr-x 755 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/public
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/employees
+drwxr-x--- 750 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets
+-rw-r----- 640 MU:MU /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+=== current-owner traversal and read check ===
+Approved lab incident note (harmless demo)
+Current owner can traverse and read.
+=== baseline hash, verify, modify, verify again ===
+179b53f72fbce04bf8df9cf764cf2b8f957af0299af5e81dcc3cc0aa3f21c662  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: OK
+d37f91d3d4e97fe3988980d14d501dc572a4f1f12b49be3ed97c6679bad0acc1  /home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt
+/home/MU/Downloads/sos/securelab-20261102-152707/member2/runs/M12.4xhgkT/securelab/secrets/incident.txt: FAILED
+sha256sum: WARNING: 1 computed checksum did NOT match
+Post-modification verification exit code: 1 (nonzero is expected)
+This is a current-user analogue only; it does not prove Alice/Bob access or the required /opt setup.

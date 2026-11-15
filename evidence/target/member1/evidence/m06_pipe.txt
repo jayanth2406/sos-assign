@@ -1,0 +1,3 @@
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/pipe_ipc
+Child received: Hello from the parent

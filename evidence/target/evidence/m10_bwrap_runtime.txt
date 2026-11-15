@@ -1,0 +1,9 @@
+
+=== M10 ROOTLESS BWRAP: short ===
+Selected short input: copying 3 bytes into a 16-byte buffer...
+Program reached the end of the copy.
+M10_short_EXIT=0
+
+=== M10 ROOTLESS BWRAP: long ===
+*** stack smashing detected ***: terminated
+M10_long_EXIT=134

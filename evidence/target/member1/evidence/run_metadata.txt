@@ -1,0 +1,6 @@
+SECURELAB Person 1 evidence run
+Timestamp (UTC): 2026-11-02T10:01:35Z
+Host: inhydmupc0899-l
+User: MU
+Repository path: /home/MU/Downloads/sos/securelab-20261102-152707
+This run records this machine's output; no values are pre-filled.

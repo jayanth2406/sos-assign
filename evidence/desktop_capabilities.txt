@@ -1,0 +1,36 @@
+<-20261102-152707$ printf '\n=== DESKTOP CAPTURE CAPABILITIES ===\n'
+
+=== DESKTOP CAPTURE CAPABILITIES ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <PLAY=%s WAYLAND_DISPLAY=%s\n' "${DISPLAY:-}" "${WAYLAND_DISPLAY:-}"
+DISPLAY=:0 WAYLAND_DISPLAY=wayland-0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <1102-152707$ command -v gnome-screenshot; command -v gnome-terminal
+/usr/bin/gnome-terminal
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ printf '\n=== RERUN METADATA ===\n'
+
+=== RERUN METADATA ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ cat evidence/member1_rerun_exit.txt
+0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ cat member1/evidence/m05_race_before.txt
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1013183
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1782455
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ cat member1/evidence/m05_race_after.txt
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

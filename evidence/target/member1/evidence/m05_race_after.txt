@@ -1,0 +1,8 @@
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000

@@ -1,0 +1,56 @@
+<ecurelab-20261102-152707$ printf '\n=== SECURELAB_RUN_STATUS ===\n'
+
+=== SECURELAB_RUN_STATUS ===
+[1]+  Done                    nohup bash -c 'timeout 180s bash run_all.sh; rc=$?; printf "%s\n" "$rc" > evidence/runner_exit.txt; printf "SECURELAB_RUN_FINISHED exit=%s\n" "$rc"' > evidence/launcher.log 2>&1
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <ecurelab-20261102-152707$ ps -p 2984931 -o pid,ppid,stat,etime,args
+    PID    PPID STAT     ELAPSED COMMAND
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <exit.txt; then printf 'RUN_EXIT='; cat evidence/runner_exit.txt; fi
+RUN_EXIT=0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ tail -45 evidence/launcher.log
+
+$ ss -ltn (check whether local port 22 is listening)
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      128          0.0.0.0:22         0.0.0.0:*          
+LISTEN 0      128             [::]:22            [::]:*          
+
+SSH config file metadata and directive names only (values are not printed):
+644 root:root /etc/ssh/sshd_config
+  directive=include
+  directive=permitrootlogin
+  directive=kbdinteractiveauthentication
+  directive=usepam
+  directive=x11forwarding
+  directive=printmotd
+  directive=acceptenv
+  directive=subsystem
+
+
+===== Mission 21: virtualization identification =====
+
+$ systemd-detect-virt
+none
+[exit status 1]
+
+$ uname -a
+Linux inhydmupc0899-l 5.15.0-43-generic #46-Ubuntu SMP Tue Jul 12 10:30:17 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+
+===== End of collection =====
+Review each result for privilege limits and target context. This collector does not establish findings or remediation success.
+
+Step exit status: 0
+
+===== M15 supplementary resource-limit demonstration =====
+M15 supplementary demonstration: own child process with RLIMIT_NOFILE=16 and RLIMIT_CPU=2/3 seconds
+This is not a complete sandbox: it does not isolate filesystems, networking, syscalls, or namespaces.
+child pid=2985277 RLIMIT_NOFILE soft=16 hard=16
+open denied at descriptor limit after 13 additional descriptors: [Errno 24] Too many open files: '/dev/null'
+child exit status=0
+
+Step exit status: 0
+
+Runner steps with failures: 1
+Review all logs before marking missions verified. M22 requires separate instructor resources.
+SECURELAB_RUN_FINISHED exit=0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

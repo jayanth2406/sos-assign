@@ -1,0 +1,18 @@
+SECURELAB_DELIVERED /home/MU/Downloads/sos/securelab-20261102-152707/final/securelab-prepared.zip 1531108 de074a830d0dc7c0966065773d83dce054c41f4eff5f79d59150496837034151 99
+SECURELAB_REPORT /home/MU/Downloads/sos/securelab-20261102-152707/submission/final/REPORT.md
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <20261102-152707$ printf '\n=== FINAL SUBMISSION VERIFICATION ===\n'
+
+=== FINAL SUBMISSION VERIFICATION ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ sha256sum final/securelab-prepared.zip
+de074a830d0dc7c0966065773d83dce054c41f4eff5f79d59150496837034151  final/securelab-prepared.zip
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ wc -c final/securelab-prepared.zip
+1531108 final/securelab-prepared.zip
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <07$ test -f submission/final/REPORT.md && printf 'REPORT_PRESENT\n'
+REPORT_PRESENT
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <reenshots/nonroot_live_desktop.png && printf 'SCREENSHOT_PRESENT\n'
+SCREENSHOT_PRESENT
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <S_EXCLUDED",all("rust-keys" not in name for name in z.namelist()))'
+ZIP_FILES 99 ZIP_TEST None
+KEYS_EXCLUDED True
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

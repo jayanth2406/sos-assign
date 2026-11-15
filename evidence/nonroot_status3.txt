@@ -1,0 +1,52 @@
+<b-20261102-152707$ printf '\n=== USER-LEVEL CHECKSEC PACKAGE ===\n'
+
+=== USER-LEVEL CHECKSEC PACKAGE ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ mkdir -p member2/M11/tools
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <file=../memory_reduced_protection) > evidence/m11_checksec.txt 2>&1
+
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <; cat evidence/m11_checksec.txt; cat member2/M11/tools/download.log
+CHECKSEC_EXIT=1
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
+Full RELRO      Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   43) Symbols	  No	0		3		../memory_protected
+Error: The file '../memory_reduced_protection' does not exist.
+
+Get:1 http://in.archive.ubuntu.com/ubuntu jammy/universe amd64 checksec all 2.4.0-1 [22.7 kB]
+Fetched 22.7 kB in 1s (30.5 kB/s)
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <curelab-20261102-152707$ printf '\n=== NONROOT SANDBOX PROBE ===\n'
+
+=== NONROOT SANDBOX PROBE ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <dev /dev --tmpfs /tmp /usr/bin/true > evidence/bwrap_probe.txt 2>&1
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <152707$ printf 'BWRAP_EXIT=%s\n' "$?"; cat evidence/bwrap_probe.txt
+BWRAP_EXIT=0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ printf '\n=== M1 RERUN STATUS ===\n'
+
+=== M1 RERUN STATUS ===
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ <xt; then printf 'M1_EXIT='; cat evidence/member1_rerun_exit.txt; fi
+M1_EXIT=0
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ tail -24 evidence/member1_rerun.log
+Expected: 2000000
+Actual  : 1013183
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_demo
+Expected: 2000000
+Actual  : 1782455
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/race_fixed
+Expected: 2000000
+Actual  : 2000000
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/pipe_ipc
+Child received: Hello from the parent
+
+$ /home/MU/Downloads/sos/securelab-20261102-152707/member1/bin/shared_memory_ipc
+Parent wrote shared memory; object mode is 0600.
+Child read shared memory: Hello through shared memory
+The shared-memory program is a team-authored POSIX shm_open/mmap demonstration; no instructor implementation was included in the supplied PDFs. See notes/Missions_1-6_answers.md for the comparison.
+
+Evidence files created under /home/MU/Downloads/sos/securelab-20261102-152707/member1/evidence
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 
+MU@inhydmupc0899-l:~/Downloads/sos/securelab-20261102-152707$ 

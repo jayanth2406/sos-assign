@@ -1,0 +1,1144 @@
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+SECURELAB 
+Break it. Understand it. Secure it. 
+ 
+Hands-On Secure Operating Systems 
+Student Project & Experiment Handout 
+Version 1.0 — Avinash (and chatGPT and Claude) 
+ 
+Your mission 
+You are responsible for a Linux machine. Learn how the operating system protects it, demonstrate 
+selected weaknesses safely, and progressively harden the machine. The project is your laboratory for 
+learning Secure Operating Systems. 
+ 
+Course: Secure Operating Systems (CS5101) 
+Department of Computer Science and Artificial Intelligence 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Welcome to SECURELAB 
+Traditional security courses often begin with definitions: authentication, authorization, DAC, MAC, ASLR, 
+sandboxing, and so on. SECURELAB reverses the order. You will first encounter a security problem, experiment 
+with a real Linux system, observe what happens, and then connect the observation to the operating-system 
+concept. 
+The SECURELAB learning loop 
+QUESTION → OBSERVE → EXPERIMENT → CONNECT → SECURE → VERIFY 
+ 
+What you will build 
+ A Linux virtual machine that acts as your security laboratory. 
+ Small C and Bash programs that expose operating-system mechanisms. 
+ A collection of evidence showing what you observed and why it happened. 
+ A progressively hardened Linux environment. 
+ A final security assessment in which you must investigate and fix problems with less scaffolding. 
+What you are NOT expected to do 
+ You do not need to become a professional security tester (unless you want to) 
+ You do not need to write malware (GOD is watching you, shame on you!) 
+ You do not need to exploit public systems (Tch tch tch! Don’t even think about it) 
+ You do not need to memorize every Linux command. 
+ 
+What you are expected to do 
+Code (a bit), understand and explain what the operating system is doing and provide evidence for your 
+conclusions. 
+Golden rule 
+Experiment only inside your own VM, your Linux machine or an environment explicitly authorized by your 
+instructor. Never scan, attack, exploit, or deliberately disrupt systems you do not own or have permission 
+to test. 
+ 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part I — Build Your SecureLab Environment 
+Your physical computer can run Windows, Linux, or macOS. All core experiments are performed inside Linux. 
+Using a VM keeps the laboratory separate from your everyday operating system and also gives us a real example 
+of virtualization. 
+Recommended standard 
+ Linux guest: Ubuntu Desktop 26.04 LTS. 
+ CPU: 2–4 virtual CPUs where practical. 
+ Memory: 6–8 GB recommended; 4 GB may work for a lighter setup. 
+ Storage: at least 40 GB of dynamically allocated disk space. 
+ Network: NAT is sufficient for most missions. 
+ Take a VM snapshot before major security-configuration changes. 
+1. Download Ubuntu 
+Use the official Ubuntu Desktop download page: Ubuntu Desktop download 
+Ubuntu currently provides separate AMD64 and ARM64 desktop images. Choose the image appropriate for your 
+computer/VM architecture. 
+2. Install a virtualization platform 
+The recommended cross-platform route is VirtualBox. Use the current official installer and documentation rather 
+than third-party download sites. 
+VirtualBox downloads: Official VirtualBox downloads 
+VirtualBox manual: Official VirtualBox manual 
+3. Follow the Ubuntu VM tutorial 
+Ubuntu provides a current, platform-neutral walkthrough: Run Ubuntu Desktop in VirtualBox 
+The tutorial is intended for Windows, macOS and Linux hosts. If your host uses Apple Silicon, pay particular 
+attention to architecture compatibility. If your instructor provides a prebuilt ARM64 VM image, use that image. 
+4. First boot 
+uname -a 
+uname -m 
+lsb_release -a 2>/dev/null || cat /etc/os-release 
+whoami 
+id 
+ip a 
+5. Update the VM 
+sudo apt update 
+sudo apt upgrade -y 
+Do this now: create Snapshot 0 
+Shut down the VM and create a snapshot named SECURELAB-CLEAN. If an experiment later breaks 
+your configuration, you can return to this known-good state. 
+ 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part II — Prepare the Laboratory 
+Install the common tools used throughout the project. Some missions install additional packages only when they 
+are needed. 
+sudo apt update 
+sudo apt install -y build-essential gcc gdb strace procps psmisc acl libcap2-bin openssh-server 
+apparmor apparmor-utils   net-tools iproute2 lsof file binutils 
+ 
+gcc --version 
+strace --version 
+Why not install everything at once? 
+A security laboratory should make dependencies visible. Later missions intentionally ask you to install a 
+tool when the concept requires it. 
+ 
+Create a project directory 
+mkdir -p ~/securelab/{src,bin,evidence,notes} 
+cd ~/securelab 
+pwd 
+Evidence convention 
+ Use `~/securelab/evidence` for screenshots, terminal captures, and result files. 
+ Use `~/securelab/notes` for short explanations. 
+ Keep source code in `~/securelab/src`. 
+ Compile programs into `~/securelab/bin` where practical. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Linux Security Question Kit 
+Instead of memorizing commands, learn the question each command helps answer. 
+Question Useful commands / files 
+Who am I? whoami, id, groups 
+What is running? ps, pstree, top 
+What does the kernel expose? /proc, /sys 
+What is this process doing? strace, lsof 
+Who owns this file? ls -l, stat 
+Who may access it? chmod, chown, getfacl 
+What network sockets exist? ss, lsof -i 
+What happened? journalctl, last 
+Is the file unchanged? sha256sum 
+What services are running? systemctl 
+Is AppArmor active? aa-status 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 1: Who Are You? 
+Syllabus connection: security goals, authentication, authorization, process credentials, attack surface 
+Mission objective: Discover that Linux associates identity information with users and processes. 
+Concepts: UID, EUID, GID, groups, authentication vs authorization, CIA triad 
+Experiment 
+Run the commands and compare your shell identity with a process identity. 
+Starter code 
+# identity.c 
+#include <stdio.h> 
+#include <unistd.h> 
+ 
+int main(void) { 
+    printf("Real UID       : %d\n", (int)getuid()); 
+    printf("Effective UID  : %d\n", (int)geteuid()); 
+    printf("Real GID       : %d\n", (int)getgid()); 
+    printf("Effective GID  : %d\n", (int)getegid()); 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc identity.c -o identity 
+   ./identity 
+*/ 
+Think about it 
+1. What is the difference between UID and EUID? 
+2. Why is authentication different from authorization? 
+3. Which CIA property is affected when an unauthorized user reads a secret file? 
+Evidence to submit 
+ Output of `id` and the C program. 
+ A short explanation of authentication vs authorization. 
+ Two attack surfaces of a normal workstation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 2: Meet the Kernel 
+Syllabus connection: user/kernel mode, system calls, TCB, OS protection mechanisms 
+Mission objective: Observe the boundary between an application and the operating system. 
+Concepts: system calls, user space, kernel space, kernel mediation, TCB 
+Experiment 
+Compile the program, run it normally, then trace it with `strace`. 
+Starter code 
+# syscall_demo.c 
+#include <fcntl.h> 
+#include <stdio.h> 
+#include <unistd.h> 
+ 
+int main(void) { 
+    int fd = open("hello.txt", O_CREAT | O_WRONLY | O_TRUNC, 0644); 
+    if (fd == -1) { 
+        perror("open"); 
+        return 1; 
+    } 
+ 
+    const char msg[] = "Hello from user space! \n"; 
+    ssize_t n = write(fd, msg, sizeof(msg) - 1); 
+    if (n < 0) { 
+        perror("write"); 
+        close(fd); 
+        return 1; 
+    } 
+ 
+    close(fd); 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc syscall_demo.c -o syscall_demo 
+ 
+   Trace: 
+   strace ./syscall_demo 2>&1 | head -50 
+*/ 
+Think about it 
+4. Which system calls did you observe? 
+5. Why should an application not directly control hardware? 
+6. Why is the kernel part of the trusted computing base? 
+Evidence to submit 
+ A short trace with open/write/close identified. 
+ Application → system call → kernel → resource diagram. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 3: Process Detective 
+Syllabus connection: processes, threads, credentials, CPU/resource management, /proc 
+Mission objective: Investigate process metadata and build a small process-security inspector. 
+Concepts: PID, PPID, UID, threads, CPU/memory usage, /proc 
+Experiment 
+Find a process you started yourself and inspect its `/proc/<PID>` directory. 
+Starter code 
+#!/usr/bin/env bash 
+# proc_inspector.sh 
+# Usage: ./proc_inspector.sh <PID> 
+ 
+PID="$1" 
+ 
+if [ -z "$PID" ]; then 
+    echo "Usage: $0 <PID>" 
+    exit 1 
+fi 
+ 
+if [ ! -d "/proc/$PID" ]; then 
+    echo "Process $PID does not exist." 
+    exit 1 
+fi 
+ 
+echo "PID: $PID" 
+echo "Command: $(tr '\0' ' ' < "/proc/$PID/cmdline")" 
+echo "Status:" 
+grep -E '^(Name|State|PPid|Uid|Gid|Threads|VmSize|VmRSS):'     "/proc/$PID/status"  
+ 
+echo "Open file descriptors: $(ls "/proc/$PID/fd" 2>/dev/ null | wc -l)" 
+ 
+# TODO: 
+# Add the process start time or another security -relevant field. 
+Think about it 
+7. What security-relevant information does `/proc/<PID>/status` reveal? 
+8. Why can resource consumption itself be a security concern? 
+9. Why is the number of threads useful when investigating a process? 
+Evidence to submit 
+ Working script. 
+ Open-file-descriptor count. 
+ Short explanation of how `/proc` helps investigation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 4: Can One Process Read Another? 
+Syllabus connection: process isolation, address spaces, virtual memory, kernel/user isolation 
+Mission objective: Observe a process's virtual address space and understand why a pointer from one process is 
+not normally usable by another. 
+Concepts: virtual addresses, memory mappings, MMU, process isolation 
+Experiment 
+Run the program and, from a second terminal, inspect its memory map. 
+Starter code 
+# address_space.c 
+#include <stdio.h> 
+#include <unistd.h> 
+ 
+int main(void) { 
+    int secret = 12345; 
+ 
+    printf("PID       = %d\n", (int)getpid()); 
+    printf("&secret   = %p\n", (void *)&secret); 
+    printf("secret    = %d\n", secret); 
+ 
+    printf("Inspect /proc/%d/maps for 30 seconds. \n", (int)getpid()); 
+    sleep(30); 
+ 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc -Wall -Wextra address_space.c -o address_space 
+ 
+   Run: 
+   ./address_space 
+ 
+   In another terminal: 
+   cat /proc/<PID>/maps 
+*/ 
+Think about it 
+10. What does a process's address space contain? 
+11. Why can't another ordinary process simply dereference the printed pointer? 
+12. What role does hardware-assisted memory protection play? 
+Evidence to submit 
+ `/proc/<PID>/maps` output. 
+ Labelled address-space diagram. 
+ Short explanation of isolation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 5: The Race 
+Syllabus connection: synchronization, race-condition vulnerabilities, threads 
+Mission objective: Create a race condition and then protect the critical section with a mutex. 
+Concepts: shared state, critical section, race condition, mutex 
+Experiment 
+Compile the starter with no optimization. Run it several times. Then implement the TODOs. 
+Starter code 
+# race_demo.c 
+#include <pthread.h> 
+#include <stdio.h> 
+ 
+long counter = 0; 
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;  
+ 
+void *worker(void *arg) { 
+    (void)arg; 
+ 
+    for (long i = 0; i < 1000000; i++) { 
+        /* 
+         * TODO: 
+         * 1. Run once with NO mutex around this increment. 
+         * 2. Then add pthread_mutex_lock(&lock). 
+         * 3. Increment. 
+         * 4. Add pthread_mutex_unlock(&lock). 
+         */ 
+        counter++; 
+    } 
+ 
+    return NULL; 
+} 
+ 
+int main(void) { 
+    pthread_t t1, t2; 
+ 
+    pthread_create(&t1, NULL, worker, NULL); 
+    pthread_create(&t2, NULL, worker, NULL);  
+ 
+    pthread_join(t1, NULL); 
+    pthread_join(t2, NULL); 
+ 
+    printf("Expected: 2000000\n"); 
+    printf("Actual  : %ld\n", counter); 
+ 
+    pthread_mutex_destroy(&lock); 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc -Wall -Wextra -O0 -pthread race_demo.c -o race_demo 
+*/ 
+Think about it 
+13. Why can the unsynchronized result be lower than expected? 
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+14. Which region is the critical section? 
+15. Why can a race condition become a security vulnerability? 
+Evidence to submit 
+ Several unsynchronized runs. 
+ Mutex-protected run. 
+ Marked critical section in the source. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 6: Two Processes Need to Talk 
+Syllabus connection: secure IPC, message passing, shared memory, synchronization 
+Mission objective: Compare IPC mechanisms and identify the security properties of the communication 
+endpoint. 
+Concepts: IPC, pipe/message passing, shared memory, permissions, trust boundary 
+Experiment 
+Use a simple pipe-based IPC first; then compare it with the shared-memory design supplied by your instructor. 
+Starter code 
+# pipe_ipc.c 
+#include <stdio.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <sys/wait.h> 
+ 
+int main(void) { 
+    int fd[2]; 
+    if (pipe(fd) == -1) { 
+        perror("pipe"); 
+        return 1; 
+    } 
+ 
+    pid_t pid = fork(); 
+    if (pid == -1) { 
+        perror("fork"); 
+        return 1; 
+    } 
+ 
+    if (pid == 0) { 
+        close(fd[1]); 
+ 
+        char buffer[128] = {0}; 
+        ssize_t n = read(fd[0], buffer, sizeof(buffer) - 1); 
+        if (n >= 0) 
+            printf("Child received: %s\n", buffer); 
+ 
+        close(fd[0]); 
+        return 0; 
+    } 
+ 
+    close(fd[0]); 
+ 
+    const char msg[] = "Hello from the parent";  
+    if (write(fd[1], msg, strlen(msg) + 1) == -1) 
+        perror("write"); 
+ 
+    close(fd[1]); 
+    waitpid(pid, NULL, 0); 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc -Wall -Wextra pipe_ipc.c -o pipe_ipc 
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+   ./pipe_ipc 
+*/ 
+Think about it 
+16. Why is a pipe different from shared memory? 
+17. Why does shared memory normally require synchronization? 
+18. What must be protected in secure IPC: the data, the endpoint, or both? 
+Evidence to submit 
+ Working IPC output. 
+ Message passing vs shared memory comparison. 
+ One proposed secure-IPC control. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 7: Alice vs Bob 
+Syllabus connection: authentication, authorization, DAC, ownership and permissions 
+Mission objective: Discover discretionary access control by creating users and testing file access. 
+Concepts: DAC, owner/group/other, least privilege, authorization 
+Safety 
+Create test accounts only inside the VM. Do not change permissions on important host or personal files. 
+ 
+Experiment 
+Create test users only in the VM. Create a file owned by Alice and test Bob's access. 
+Starter code 
+# Shell experiment 
+sudo adduser alice 
+sudo adduser bob 
+ 
+sudo -u alice bash -c 'echo "Alice secret" > /tmp/alice_secret.txt'  
+sudo chown alice:alice /tmp/alice_secret.txt  
+ 
+ls -l /tmp/alice_secret.txt 
+sudo -u bob cat /tmp/alice_secret.txt || true 
+ 
+sudo chmod 600 /tmp/alice_secret.txt 
+sudo -u bob cat /tmp/alice_secret.txt || true 
+Think about it 
+19. Why did Bob's access change after chmod 600? 
+20. Who controls the discretionary permission on this file? 
+21. How does this experiment demonstrate least privilege? 
+Evidence to submit 
+ Before/after permission output. 
+ Explanation of owner/group/other. 
+ Allowed and denied access evidence. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 8: The Permission Maze 
+Syllabus connection: ACLs, DAC, fine-grained authorization 
+Mission objective: Give one additional user access without changing the ordinary owner/group/other design. 
+Concepts: ACLs, getfacl, setfacl, fine-grained authorization 
+Experiment 
+Install ACL support, create a test file, add Bob's read permission, and inspect the ACL. 
+Starter code 
+sudo apt install -y acl 
+ 
+sudo -u alice bash -c 'echo "ACL test" > /tmp/acl_secret.txt' 
+sudo chown alice:alice /tmp/acl_secret.txt  
+sudo chmod 600 /tmp/acl_secret.txt 
+ 
+getfacl /tmp/acl_secret.txt 
+sudo setfacl -m u:bob:r /tmp/acl_secret.txt 
+getfacl /tmp/acl_secret.txt 
+ 
+sudo -u bob cat /tmp/acl_secret.txt 
+Think about it 
+22. What changed when the ACL was added? 
+23. Why is an ACL useful when owner/group/other is insufficient? 
+24. What security principle is being exercised? 
+Evidence to submit 
+ Before/after getfacl output. 
+ One paragraph comparing permissions and ACLs. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 9: Too Much Power 
+Syllabus connection: capabilities, privilege separation, least privilege 
+Mission objective: Investigate how Linux can express privileges more narrowly than full root access. 
+Concepts: root, sudo, capabilities, privilege separation, least privilege 
+Safety 
+Do not experiment on `/usr/bin` or other system binaries. Capability changes can create security holes. 
+ 
+Experiment 
+Inspect your current privilege configuration and existing file capabilities. Do not add capabilities to system 
+binaries. 
+Starter code 
+sudo apt install -y libcap2-bin 
+ 
+id 
+sudo -l 
+capsh --print | head -40 
+getcap -r /usr/bin 2>/dev/null | head -20 
+Think about it 
+25. Why is giving every program root privileges dangerous? 
+26. What is the idea behind a capability? 
+27. How can privilege separation reduce the impact of a compromised component? 
+Evidence to submit 
+ Selected output from id/capsh/getcap. 
+ Diagram comparing broad privilege with narrow privilege. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 10: The Dangerous Array 
+Syllabus connection: buffer overflow, stack memory, secure memory management 
+Mission objective: Understand how an unchecked copy can corrupt memory, while keeping the experiment 
+inside the VM and avoiding exploit development. 
+Concepts: stack, buffer overflow, bounds checking, undefined behavior 
+Safety 
+This experiment is for observation only. Do not develop shellcode, payloads, or attacks against another 
+process or machine. 
+Experiment 
+Compile the controlled demonstration. First run it with a short input. Then provide a longer input and observe 
+whether the program terminates normally or is stopped by a protection mechanism. 
+Starter code 
+# memory_overflow_demo.c 
+#include <stdio.h> 
+#include <string.h> 
+ 
+int main(void) { 
+    char buffer[16]; 
+    const char input[] = "THIS_INPUT_IS_LONGER_THAN_SIXTEEN";  
+ 
+    printf("Copying %zu bytes into a 16-byte buffer...\n", 
+           strlen(input) + 1); 
+ 
+    /* 
+     * INTENTIONALLY UNSAFE FOR THE LAB. 
+     * Do not replace input with an exploit payload.  
+     */ 
+    memcpy(buffer, input, strlen(input) + 1);  
+ 
+    printf("Program reached the end of the copy. \n"); 
+    return 0; 
+} 
+ 
+/* Compile: 
+   gcc -Wall -Wextra -O0 -g memory_overflow_demo.c -o memory_overflow_demo 
+ 
+   Run: 
+   ./memory_overflow_demo 
+*/ 
+Think about it 
+28. What does it mean to write beyond the end of a buffer? 
+29. Why is memory corruption a security problem? 
+30. Why is a bounds-checked operation safer? 
+Evidence to submit 
+ Compiler output. 
+ Observed program behavior. 
+ Diagram showing intended buffer boundary vs copied data. 
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+ 
+Mission 11: Why Didn't the Attack Work? 
+Syllabus connection: NX/DEP, ASLR, stack canaries, modern memory defenses 
+Mission objective: Inspect executable security properties and connect compiler/OS defenses to memory safety. 
+Concepts: NX/DEP, ASLR, stack canaries, PIE, defense in depth 
+Safety 
+Do not turn this mission into exploit development. The learning goal is to understand defenses and their 
+interaction. 
+ 
+Experiment 
+Use checksec and Linux settings to inspect protections. Compare a protected build with a build that deliberately 
+disables selected compiler protections for observation only. 
+Starter code 
+sudo apt install -y checksec 
+ 
+# Protected/default-style build 
+gcc -Wall -Wextra -O0 -fstack-protector-strong -fPIE -pie     memory_overflow_demo.c -o 
+memory_protected 
+ 
+checksec --file=./memory_protected 
+ 
+# Inspect ASLR 
+cat /proc/sys/kernel/randomize_va_space 
+ 
+# Inspect stack permissions 
+readelf -W -l ./memory_protected | grep GNU_STACK 
+Think about it 
+31. What does ASLR make harder to predict? 
+32. What does NX prevent a writable memory region from being used for? 
+33. What does a stack canary attempt to detect? 
+34. Why is defense in depth better than relying on one protection? 
+Evidence to submit 
+ checksec output. 
+ ASLR value. 
+ A short explanation linking each defense to a threat. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 12: The Secret File 
+Syllabus connection: file ownership, permissions, secure file access, storage management 
+Mission objective: Design a small directory hierarchy with deliberate access rules. 
+Concepts: ownership, groups, permissions, directory traversal, least privilege 
+Experiment 
+Create a test hierarchy under `/opt/securelab`. Verify access using your test accounts. 
+Starter code 
+sudo groupadd -f securelab 
+sudo usermod -aG securelab alice 
+ 
+sudo mkdir -p /opt/securelab/{public,employees,secrets} 
+sudo touch /opt/securelab/secrets/incident.txt  
+ 
+sudo chown -R root:securelab /opt/securelab 
+sudo chmod 755 /opt/securelab 
+sudo chmod 755 /opt/securelab/public 
+sudo chmod 750 /opt/securelab/employees 
+sudo chmod 750 /opt/securelab/secrets 
+sudo chmod 640 /opt/securelab/secrets/incident.txt  
+ 
+ls -ld /opt/securelab /opt/securelab/secrets  
+ls -l /opt/securelab/secrets/incident.txt 
+Think about it 
+35. Why does directory permission matter as well as file permission? 
+36. Who should read the incident file? 
+37. What would happen if the file were world-readable? 
+Evidence to submit 
+ Permission design table. 
+ Access tests for Alice and Bob. 
+ Short least-privilege explanation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 13: Can We Trust the File? 
+Syllabus connection: file integrity, secure deletion concepts, storage security 
+Mission objective: Detect modification with hashing and understand what hashing can and cannot prove. 
+Concepts: integrity, SHA-256, tampering, authenticity 
+Experiment 
+Create a baseline hash, modify the file, and verify that the hash check fails. 
+Starter code 
+echo "Approved configuration" > config.txt  
+sha256sum config.txt > config.sha256 
+ 
+cat config.sha256 
+sha256sum -c config.sha256 
+ 
+echo "Unexpected change" >> config.txt 
+ 
+sha256sum config.txt 
+sha256sum -c config.sha256 || true 
+Think about it 
+38. What changed in the hash? 
+39. Does a hash prove who created the file? 
+40. Why is authenticity a different property from integrity? 
+Evidence to submit 
+ Original hash. 
+ Changed hash. 
+ Verification failure and explanation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 14: What Happened While I Was Away? 
+Syllabus connection: logging, auditing, monitoring, incident logging 
+Mission objective: Use Linux logs to reconstruct a small timeline. 
+Concepts: journald, authentication events, timestamps, audit trail 
+Experiment 
+Generate a few harmless events in your VM, then inspect recent logs. 
+Starter code 
+journalctl -n 30 --no-pager 
+journalctl --since "15 minutes ago" --no-pager 
+ 
+sudo systemctl status ssh --no-pager 2>/dev/null || true 
+journalctl -u ssh --no-pager 2>/dev/null | tail -30 
+ 
+last | head -10 
+Think about it 
+41. Which events would be useful during an investigation? 
+42. Why are timestamps important? 
+43. What can logs fail to tell you? 
+Evidence to submit 
+ A 5–10 event timeline. 
+ Identification of at least one limitation of logs. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 15: The Suspicious Application 
+Syllabus connection: sandboxing, application attack surface, privilege separation 
+Mission objective: Identify what resources an application can access and decide what it actually needs. 
+Concepts: sandboxing, attack surface, least privilege 
+Experiment 
+Choose a harmless program you wrote or a standard utility. Inspect its process, open files, and network activity. 
+Starter code 
+# Replace <PID> with the PID of a process you own. 
+ps -p <PID> -o pid,ppid,uid,euid,nlwp,%cpu,%mem,cmd 
+ls -l /proc/<PID>/fd 
+cat /proc/<PID>/status | grep -E 'Name|Uid|Gid|Threads' 
+ss -lntup 
+Think about it 
+44. Which resources does your chosen application actually need? 
+45. Which resources could be denied without breaking its purpose? 
+46. How does least privilege reduce attack surface? 
+Evidence to submit 
+ Application resource table. 
+ Proposed sandbox policy. 
+ At least three resources you would restrict. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 16: Build Your First Container Sandbox 
+Syllabus connection: virtualization, containers, namespaces, cgroups 
+Mission objective: Run a small application in a container and investigate resource isolation. 
+Concepts: containers, namespaces, PID/network/mount isolation, cgroups 
+Instructor note 
+Use the official Docker documentation for the current installation path. Docker's current documentation 
+supports Ubuntu 26.04 on relevant architectures. 
+ 
+Safety 
+Docker access can be highly privileged on Linux. Use it only in the lab VM and follow the course-provided 
+installation instructions. 
+ 
+Experiment 
+Install Docker only according to the official documentation or the course image instructions. Verify with a harmless 
+Ubuntu container. 
+Starter code 
+# Verify Docker after installation: 
+sudo docker run --rm hello-world 
+ 
+# Observe a minimal container: 
+sudo docker run --rm ubuntu:26.04 uname -a 
+sudo docker run --rm ubuntu:26.04 cat /etc/os-release 
+sudo docker run --rm ubuntu:26.04 ps 
+Think about it 
+47. Why does the container have its own process view? 
+48. Is a container the same thing as a virtual machine? 
+49. Which resources can cgroups control? 
+Evidence to submit 
+ Container output. 
+ Host vs container architecture diagram. 
+ VM vs container comparison. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 17: Linux Says No 
+Syllabus connection: AppArmor, MAC, application sandboxing 
+Mission objective: Observe mandatory policy enforcement with AppArmor. 
+Concepts: MAC, AppArmor, profiles, policy enforcement, defense in depth 
+Experiment 
+Check whether AppArmor is active and inspect loaded profiles. Your instructor may provide a small test 
+profile/application for a controlled denial experiment. 
+Starter code 
+sudo apt install -y apparmor apparmor-utils 
+sudo aa-status 
+sudo aa-unconfined 2>/dev/null | head -20 
+Think about it 
+50. What is AppArmor controlling? 
+51. How is policy enforcement different from ordinary Unix ownership? 
+52. Why can MAC provide defense in depth? 
+Evidence to submit 
+ AppArmor status. 
+ One profile explanation. 
+ If a denial demo is provided, evidence of allowed vs denied behavior. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 18: Compare Access-Control Models 
+Syllabus connection: DAC, MAC, RBAC, ACLs, capabilities, authorization 
+Mission objective: Construct a conceptual map from the mechanisms you have already used. 
+Concepts: DAC, MAC, RBAC, ACLs, capabilities, authorization 
+Experiment 
+Complete the comparison from your own observations. 
+Think about it 
+53. For DAC, who normally controls the access decision? 
+54. For MAC, who defines the policy? 
+55. How would RBAC express a role such as 'database administrator'? 
+56. What is the security idea behind a capability? 
+57. How do ACLs complement traditional permissions? 
+Evidence to submit 
+ Completed comparison table: mechanism / decision basis / example / limitation. 
+ One realistic scenario for each mechanism. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 19: Harden the Machine 
+Syllabus connection: OS hardening, patch management, firewall fundamentals, monitoring 
+Mission objective: Perform a baseline audit and make justified hardening changes. 
+Concepts: updates, services, firewall, exposed ports, least functionality 
+Safety 
+Do not disable networking, SSH, or critical services without knowing how to recover the VM. Use 
+snapshots. 
+ 
+Experiment 
+Record the baseline first. Then make only documented changes. 
+Starter code 
+sudo apt update 
+apt list --upgradable 2>/dev/null | head -30 
+ 
+systemctl --type=service --state=running --no-pager 
+ss -lntup 
+ 
+sudo ufw status verbose 2>/dev/null || true 
+uname -r 
+Think about it 
+58. Which services are needed? 
+59. Which ports should be exposed? 
+60. Why is patch management a security control? 
+61. Why should every hardening change be documented and reversible? 
+Evidence to submit 
+ Before/after hardening checklist. 
+ At least three changes with justification. 
+ Verification evidence. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 20: Secure Remote Access 
+Syllabus connection: authentication, authorization, secure remote access, logging 
+Mission objective: Understand the security boundary created when someone connects remotely. 
+Concepts: SSH, authentication, authorization, keys, passwords, logging 
+Safety 
+Do not expose SSH to the public internet for this project. Keep the service inside the VM/lab network 
+unless your instructor explicitly directs otherwise. 
+ 
+Experiment 
+Run SSH locally within the VM. Your instructor may later provide a second VM for a two-machine exercise. 
+Starter code 
+sudo apt install -y openssh-server 
+sudo systemctl status ssh --no-pager 
+ss -lnt | grep ':22' || true 
+ 
+# Local test: 
+ssh localhost 
+Think about it 
+62. What does SSH authenticate? 
+63. After authentication, what determines what the user can do? 
+64. Where would you look for login evidence? 
+Evidence to submit 
+ Successful local SSH evidence. 
+ Authentication vs authorization explanation. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 21: Who Protects the VM? 
+Syllabus connection: virtualization, hypervisors, TCB, trusted execution concepts 
+Mission objective: Map the trust boundaries from application to physical hardware. 
+Concepts: hypervisor, guest OS, host OS, virtual hardware, TCB, trust boundaries 
+Experiment 
+Draw the stack for your own computer and VM. 
+Think about it 
+65. Which components are inside the guest OS trust boundary? 
+66. Which component controls the virtual hardware presented to the guest? 
+67. Why does virtualization create another layer of security dependencies? 
+Evidence to submit 
+ Application → guest kernel → virtual hardware → hypervisor → host architecture diagram. 
+ One paragraph on the VM's additional attack surface. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Mission 22 — FINAL CHALLENGE: Secure the Machine 
+The scaffolding ends here. Your team receives a Linux VM or instructor-prepared snapshot containing several 
+weaknesses. Your task is to investigate, explain, fix, and verify. 
+The challenge 
+Do not begin by changing everything. First establish a baseline. A security engineer needs evidence 
+before remediation. YOU WILL BE GIVEN A SEPARATE DOCUMENT WITH ALL THE RULES AND 
+RESOURCES. 
+ 
+Your workflow 
+68. Establish a baseline: users, processes, services, listening ports, important files, and security status. 
+69. Identify at least five security observations. 
+70. Classify each observation: confidentiality, integrity, availability, authentication, authorization, isolation, or 
+attack surface. 
+71. Choose an appropriate OS-level control. 
+72. Apply the control. 
+73. Re-test the original condition. 
+74. Capture evidence. 
+75. Write a short security report. 
+Possible findings 
+ A user can read a file they should not read. 
+ A service is running unnecessarily. 
+ A process has more privilege than necessary. 
+ A file can be modified without adequate detection. 
+ An unnecessary network service is listening. 
+ An application is insufficiently confined. 
+ Logs are insufficient to reconstruct an event. 
+ Security updates are missing. 
+Final report 
+ Executive summary 
+ System profile 
+ Threat model 
+ Attack surface 
+ Findings and evidence 
+ Remediation and rationale 
+ Verification 
+ Reflection: which Secure OS concepts became clearer through experimentation? 
+ Future improvements 
+Final reflection questions 
+76. Which protection mechanism surprised you most? 
+77. Which security problem required more than one OS mechanism to solve? 
+78. Which experiment made process isolation or memory protection clearer? 
+79. Where did least privilege appear repeatedly? 
+80. What would happen if the kernel itself were compromised? 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part III — Project Milestones 
+Use these milestones to prevent the project from becoming one large last-minute submission. 
+Milestone Definition of done Missions 
+Milestone 1 — Lab Ready VM boots, updates complete, 
+project directory created, 
+Snapshot 0 taken. 
+Missions 1–2 
+Milestone 2 — Process Security Process inspector works; 
+address-space experiment 
+documented. 
+Missions 3–4 
+Milestone 3 — Concurrency & 
+IPC 
+Race condition reproduced and 
+fixed; IPC experiment working. 
+Missions 5–6 
+Milestone 4 — Access Control DAC, ACLs and privilege 
+concepts demonstrated. 
+Missions 7–9 
+Milestone 5 — Memory Defense Controlled overflow behavior 
+observed; modern protections 
+inspected. 
+Missions 10–11 
+Milestone 6 — Evidence & 
+Containment 
+File integrity, logging, containers 
+and AppArmor investigated. 
+Missions 12–18 
+Milestone 7 — Harden Baseline and hardening changes 
+documented. 
+Missions 19–21 
+Milestone 8 — Independent 
+Security Assessment 
+Final machine secured and 
+report completed. 
+Mission 22 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Evidence Template 
+Use this template for each mission. 
+Question 
+What security question were you investigating? 
+ 
+ 
+Prediction 
+What did you expect to happen, and why? 
+ 
+ 
+Experiment 
+What commands/code did you run? 
+ 
+ 
+Observation 
+What actually happened? 
+ 
+ 
+Concept 
+Which Secure OS concept explains the observation? 
+ 
+ 
+Defense 
+What protection mechanism is relevant? 
+ 
+ 
+Verification 
+How did you prove the protection worked? 
+ 
+ 
+Reflection 
+What would happen if this control were missing? 
+ 
+ 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part IV — Syllabus Coverage Map 
+Syllabus topic Project coverage 
+Introduction to secure operating systems Welcome + Missions 1–2 
+Security goals and principles Mission 1 + project-wide 
+Trusted Computing Base Missions 2, 21 
+Threat models Missions 1, 15, 19, 22 
+Attack surface Missions 1, 3, 15, 19, 21 
+User/kernel mode Mission 2 
+OS protection mechanisms Missions 2, 4, 11, 17 
+Malware and OS attacks Missions 10–11 + controlled discussion 
+Secure OS design principles Throughout 
+Processes and threads Missions 3–5 
+Process isolation Mission 4 
+Address spaces Mission 4 
+Process credentials Missions 1, 3 
+CPU/resource management Missions 3, 16 
+Synchronization/race vulnerabilities Mission 5 
+Secure IPC Mission 6 
+Authentication Missions 1, 20 
+Authorization Missions 7–9, 18 
+DAC Mission 7 
+MAC Missions 17–18 
+RBAC Mission 18 
+ACLs Mission 8 
+Capabilities Mission 9 
+Privilege separation Mission 9 
+Sandboxing Missions 15–17 
+Memory protection Missions 4, 10–11 
+Virtual memory / secure address spaces Mission 4 
+Memory permissions Mission 11 
+Kernel/user-space isolation Missions 2, 4 
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Buffer overflow / stack overflow Mission 10 
+DEP/NX Mission 11 
+ASLR Mission 11 
+Stack canaries Mission 11 
+Secure memory management Missions 10–11 
+File ownership/permissions Missions 7, 12 
+Secure file access Mission 12 
+File integrity Mission 13 
+Secure deletion concepts Mission 13 discussion 
+Storage encryption concepts Project extension / class discussion 
+Secure I/O/device access Missions 2, 19 discussion 
+Logging and auditing Mission 14 
+Virtualization and hypervisors Mission 21 
+Virtual machines Entire project 
+Containers/namespaces/cgroups Mission 16 
+Application sandboxing Missions 15–17 
+Secure system call interface Mission 2 
+SELinux/AppArmor Mission 17 + comparison in Mission 18 
+Secure boot concepts Mission 21 discussion 
+OS hardening Mission 19 
+Patch management Mission 19 
+Firewall fundamentals Mission 19 
+Secure remote access Mission 20 
+Monitoring/incident logging Missions 14, 19 
+Trusted execution concepts Mission 21 
+Emerging trends Final discussion/report 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part V — Troubleshooting 
+Problem First response 
+VM is slow Close host applications; check VM RAM/CPU 
+allocation; avoid running several heavy tools at 
+once. 
+No network Check VM network mode; run `ip a`, `ip route`, then 
+`ping -c 3 ubuntu.com`. 
+Permission denied Run `id`; inspect `ls -l`, directory permissions, 
+ownership and ACLs. 
+Command not found Check the mission's package installation step; use 
+`apt search <term>`. 
+Service will not start Use `systemctl status <service>` and `journalctl -u 
+<service>`. 
+C program differs from a friend's Record compiler version and flags. Repeat the 
+experiment. Do not assume one run is universal. 
+I broke the VM Stop changing things. Revert to your latest known-
+good snapshot. 
+Docker behaves unexpectedly Check the Docker installation path and whether the 
+daemon is running. Use the official Docker 
+documentation. 
+Good evidence habits 
+ Capture the command and the output together. 
+ Record both insecure and secured states. 
+ Write your prediction before running an experiment. 
+ If the result varies, repeat it and explain why. 
+ A screenshot without an explanation is not sufficient evidence. 
+  
+
+SECURELAB • Secure Operating Systems  
+Student Handout • Break it. Understand it. Secure it. 
+Part VI — Official Reference Links 
+Use official documentation for current installation instructions and syntax. 
+Ubuntu Desktop download: https://ubuntu.com/download/desktop 
+Ubuntu Desktop documentation: https://ubuntu.com/desktop/docs/en/26.04/ 
+Ubuntu: Run Ubuntu Desktop in VirtualBox: https://ubuntu.com/tutorials/how-to-run-ubuntu-desktop-on-a-
+virtual-machine-using-virtualbox 
+VirtualBox downloads: https://www.virtualbox.org/wiki/Downloads 
+VirtualBox manual: https://www.virtualbox.org/manual/ 
+Docker Engine installation: https://docs.docker.com/engine/install/ubuntu/ 
+Docker general installation documentation: https://docs.docker.com/engine/install/ 
+OpenSSH manual/documentation: https://www.openssh.com/manual.html 
+Ubuntu AppArmor documentation: https://ubuntu.com/server/docs/security-apparmor/ 
+Linux capabilities(7): https://man7.org/linux/man-pages/man7/capabilities.7.html 
+Linux proc(5): https://man7.org/linux/man-pages/man5/proc.5.html 
+Appendix — Safe Compilation Checklist 
+ Compile with warnings: `-Wall -Wextra`. 
+ Use `-g` when debugging with GDB. 
+ Use `-pthread` for POSIX thread programs. 
+ Record important compiler flags when comparing security protections. 
+ Do not copy exploit payloads from the internet into lab programs. 
+ Keep intentionally unsafe programs inside the VM. 
+Appendix — Questions to Ask Whenever You See a Security Mechanism  
+81. What resource is being protected? 
+82. Who is trusted? 
+83. Who is untrusted? 
+84. What boundary separates them? 
+85. What mechanism enforces the boundary? 
+86. What happens when access is denied? 
+87. Can the mechanism itself fail? 
+88. How would I verify that the defense is actually working? 
+Remember 
+Secure Operating Systems is not just about preventing attacks. It is about understanding the boundaries, 
+mechanisms, assumptions and evidence that make a system trustworthy. 
+ 

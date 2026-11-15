@@ -1,0 +1,21 @@
+run_all.sh: shell syntax passed
+member1\run_missions.sh: shell syntax passed
+member1\src\proc_inspector.sh: shell syntax passed
+member2\run_missions.sh: shell syntax passed
+member2\M07\evidence.sh: shell syntax passed
+member2\M08\evidence.sh: shell syntax passed
+member2\M09\evidence.sh: shell syntax passed
+member2\M10\compile.sh: shell syntax passed
+member2\M10\m10_runtime_approved.sh: shell syntax passed
+member2\M10\run_safe_demo.sh: shell syntax passed
+member2\M11\inspect.sh: shell syntax passed
+member2\M12\evidence.sh: shell syntax passed
+member2\M13\evidence.sh: shell syntax passed
+member2\M14\evidence.sh: shell syntax passed
+member3\collect.sh: shell syntax passed
+package_check.py: Python syntax passed
+rustdesk_transfer.py: Python syntax passed
+member3\sandbox_demo.py: Python syntax passed
+member3\ssh_loopback_demo.py: Python syntax passed
+README and final report/audit links passed
+Credential exclusion and content checks passed
